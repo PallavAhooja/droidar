@@ -7,7 +7,7 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
-        <activity android:name="TechDemoLauncher" >
+        <activity android:name="droidar2.sample.TechDemoLauncher" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

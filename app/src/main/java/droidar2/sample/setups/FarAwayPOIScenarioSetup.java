@@ -1,4 +1,4 @@
-package de.rwth.setups;
+package droidar2.sample.setups;
 
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GL1Renderer;

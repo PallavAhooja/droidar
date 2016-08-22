@@ -1,4 +1,4 @@
-package de.rwth.exampleClasses;
+package droidar2.sample.exampleClasses;
 
 import com.droidar2.system.EventManager;
 import android.app.Activity;

@@ -1,4 +1,4 @@
-package de.rwth;
+package droidar2.sample;
 
 import com.droidar2.system.ArActivity;
 import com.droidar2.system.ErrorHandler;
@@ -21,21 +21,22 @@ import android.widget.LinearLayout;
 
 import com.droidar2.commands.ui.CommandShowToast;
 
-import de.rwth.setups.CollectItemsSetup;
-import de.rwth.setups.DebugSetup;
-import de.rwth.setups.FarAwayPOIScenarioSetup;
-import de.rwth.setups.FastChangingTextSetup;
-import de.rwth.setups.GameDemoSetup;
-import de.rwth.setups.GeoPosTestSetup;
-import de.rwth.setups.GraphCreationSetup;
-import de.rwth.setups.GraphMovementTestSetup;
-import de.rwth.setups.LargeWorldsSetup;
-import de.rwth.setups.LightningSetup;
-import de.rwth.setups.PlaceObjectsSetup;
-import de.rwth.setups.PlaceObjectsSetupTwo;
-import de.rwth.setups.PositionTestsSetup;
-import de.rwth.setups.SensorTestSetup;
-import de.rwth.setups.StaticDemoSetup;
+import de.rwth.R;
+import droidar2.sample.setups.CollectItemsSetup;
+import droidar2.sample.setups.DebugSetup;
+import droidar2.sample.setups.FarAwayPOIScenarioSetup;
+import droidar2.sample.setups.FastChangingTextSetup;
+import droidar2.sample.setups.GameDemoSetup;
+import droidar2.sample.setups.GeoPosTestSetup;
+import droidar2.sample.setups.GraphCreationSetup;
+import droidar2.sample.setups.GraphMovementTestSetup;
+import droidar2.sample.setups.LargeWorldsSetup;
+import droidar2.sample.setups.LightningSetup;
+import droidar2.sample.setups.PlaceObjectsSetup;
+import droidar2.sample.setups.PlaceObjectsSetupTwo;
+import droidar2.sample.setups.PositionTestsSetup;
+import droidar2.sample.setups.SensorTestSetup;
+import droidar2.sample.setups.StaticDemoSetup;
 
 public class TechDemoLauncher extends Activity {
 	@Override
