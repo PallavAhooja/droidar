@@ -1,0 +1,54 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* default.properties
+* lib/
+* lib/simpleUIv2.jar
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+* src/com.droidar2.actions/actionExample.uxf => app/src/main/resources/com.droidar2.actions/actionExample.uxf
+* src/com.droidar2.commands/com.droidar2.commands.uxf => app/src/main/resources/com.droidar2.commands/com.droidar2.commands.uxf
+* src/com.droidar2.gamelogic/concept.uxf => app/src/main/resources/com.droidar2.gamelogic/concept.uxf
+* src/com.droidar2.geo/com.droidar2.geo.uxf => app/src/main/resources/com.droidar2.geo/com.droidar2.geo.uxf
+* src/com.droidar2.geo/geoObjWithMeshGroup.uxf => app/src/main/resources/com.droidar2.geo/geoObjWithMeshGroup.uxf
+* src/com.droidar2.geo/gmap.uxf => app/src/main/resources/com.droidar2.geo/gmap.uxf
+* src/com.droidar2.gl/animations/animationConcept.uxf => app/src/main/resources/com.droidar2.gl/animations/animationConcept.uxf
+* src/com.droidar2.gl/color picking.uxf => app/src/main/resources/com.droidar2.gl/color picking.uxf
+* src/com.droidar2.gl/graphics overview 1.uxf => app/src/main/resources/com.droidar2.gl/graphics overview 1.uxf
+* src/com.droidar2.gl/graphics overview 2.uxf => app/src/main/resources/com.droidar2.gl/graphics overview 2.uxf
+* src/com.droidar2.gui/editScreen.uxf => app/src/main/resources/com.droidar2.gui/editScreen.uxf
+* src/com.droidar2.gui/com.droidar2.gui.uxf => app/src/main/resources/com.droidar2.gui/com.droidar2.gui.uxf
+* src/com.droidar2.system/inputSystem.uxf => app/src/main/resources/com.droidar2.system/inputSystem.uxf
+* src/com.droidar2.system/inputSystem2.uxf => app/src/main/resources/com.droidar2.system/inputSystem2.uxf
+* src/com.droidar2.system/setup.uxf => app/src/main/resources/com.droidar2.system/setup.uxf
+* src/com.droidar2.util/com.droidar2.util.uxf => app/src/main/resources/com.droidar2.util/com.droidar2.util.uxf
+* src/com.droidar2.worldData/visitor.uxf => app/src/main/resources/com.droidar2.worldData/visitor.uxf
+* src/com.droidar2.worldData/world.uxf => app/src/main/resources/com.droidar2.worldData/world.uxf
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs com.droidar2.network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
