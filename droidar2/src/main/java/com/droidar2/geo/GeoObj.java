@@ -51,7 +51,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
 	@Deprecated
 	public static final GeoObj n3 = new GeoObj(50.769174, 6.095156, 0, "N3");
 	@Deprecated
-	public static final GeoObj rwthI9 = new GeoObj(50.778393, 6.060886, 0, "I9");
+	public static final GeoObj rwthI9 = new GeoObj(50.778771, 6.061074, 0, "I9");
 	@Deprecated
 	public static final GeoObj iPark1 = new GeoObj(50.778771, 6.061074, 0, "P1");
 	@Deprecated
@@ -100,6 +100,8 @@ public class GeoObj extends Obj implements HasDebugInformation {
 	 * {@link GeoObjWrapper}s
 	 */
 	private boolean isDeleted = false;
+
+	private double myMaxVectorLength = 10;
 
 	// Vec myPosition=new Vec();
 
@@ -206,7 +208,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.droidar2.worldData.Obj#getPosition()
+	 * @see worldData.Obj#getPosition()
 	 */
 	@Override
 	public Vec getPosition() {
@@ -406,6 +408,10 @@ public class GeoObj extends Obj implements HasDebugInformation {
 					(int) (getLongitude() * 1E6));
 	}
 
+	public void setMaxVectorLength(double max) {
+		this.myMaxVectorLength = max;
+	}
+
 	/**
 	 * calculates the virtual position in the OpenGL-view relative to the
 	 * relative zero point (normally the device position)
@@ -437,11 +443,40 @@ public class GeoObj extends Obj implements HasDebugInformation {
 		 * never happen, but for people in Greenwhich eg it might be a problem
 		 * when living near the 0 latitude..
 		 */
+
 		Vec position = new Vec();
 		position.x = (float) ((myLongitude - zeroLongitude) * 111319.4917 * Math
 				.cos(zeroLatitude * 0.0174532925));
 		position.y = (float) ((myLatitude - zeroLatitude) * 111133.3333);
 
+		Log.i(LOG_TAG, "Original Position: " + position);
+
+		float x = position.x;
+		float y = position.y;
+		int countX = 0;
+		while ( Math.abs(x) > this.myMaxVectorLength ) {
+			x /= 10;
+			countX++;
+		}
+
+		int countY = 0;
+		while ( Math.abs(y) > this.myMaxVectorLength ) {
+			y /= 10;
+			countY++;
+		}
+		int totalReductions = countX > countY ? countY : countX;
+
+		int count = 0;
+		for( ;count<totalReductions; count++){
+			position.x /= 10;
+			position.y /= 10;
+		}
+
+		// Force position to 1, 1, 0
+		position.x = 1;
+		position.y = 1;
+
+		Log.i(LOG_TAG, "Setting Position to: " + position);
 		/*
 		 * the altitude should be respected as well but altitude = 0 should by
 		 * default mean the current device altitude is used:
@@ -658,9 +693,21 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
 			if (m != null) {
 				m.setPosition(pos);
+				//m.setPosition(new Vec(5, 1, 1));
 				return true;
 			}
 		}
+		else {
+			MeshComponent m = getMySurroundGroup();
+
+			Log.e(LOG_TAG, "No Position can be calculated! Forcing 5,1,1");
+			if( m == null){
+				Log.e(LOG_TAG, "Mesh Surround Group is null. cant force 5,1,1");
+			}
+			else
+				m.setPosition(new Vec(5, 1, 1));
+		}
+
 		return false;
 	}
 

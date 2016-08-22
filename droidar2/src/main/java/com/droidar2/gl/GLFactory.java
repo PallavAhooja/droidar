@@ -614,6 +614,24 @@ public class GLFactory {
 		return o;
 	}
 
+	public Obj newTextObject(String textToDisplay, Vec textPosition,
+							 Context context, GLCamera glCamera, Obj o) {
+
+		float textSize = 1;
+
+		TextView v = new TextView(context);
+		v.setTypeface(null, Typeface.BOLD);
+		// Set textcolor to black:
+		// v.setTextColor(new Color(0, 0, 0, 1).toIntARGB());
+		v.setText(textToDisplay);
+		MeshComponent mesh = this.newTexturedSquare("textBitmap"
+				+ textToDisplay, com.droidar2.util.IO.loadBitmapFromView(v), textSize);
+		mesh.setPosition(textPosition);
+		mesh.addAnimation(new AnimationFaceToCamera(glCamera));
+		o.setComp(mesh);
+		return o;
+	}
+
 	/**
 	 * also read {@link GLFactory#newTexturedSquare(String, Bitmap, float)}
 	 * 
@@ -636,6 +654,44 @@ public class GLFactory {
 		triangleMesh.addChild(new AnimationFaceToCamera(glCamera, 0.5f));
 		GeoObj o = new GeoObj(latitude, longitude);
 		o.setComp(triangleMesh);
+		return o;
+	}
+
+	public Obj newSolarSystem(Vec position,Obj o) {
+		MeshComponent sunBox = new Shape();
+		if (position != null)
+			sunBox.setPosition(position);
+		o.setComp(sunBox);
+
+		MeshComponent earthRing = new Shape();
+		MeshComponent earthBox = new Shape();
+		earthRing.addChild(earthBox);
+
+		MeshComponent sun = GLFactory.getInstance().newNSidedPolygonWithGaps(
+				20, Color.red());
+		GLFactory.getInstance().addRotateAnimation(sun, 30, new Vec(1, 1, 1));
+		sunBox.addChild(sun);
+
+		GLFactory.getInstance().addRotateAnimation(earthRing, 40,
+				new Vec(0.5f, 0.3f, 1));
+		earthBox.setPosition(new Vec(3, 0, 0));
+		sunBox.addChild(earthRing);
+
+		MeshComponent earth = GLFactory.getInstance().newCircle(Color.green());
+		earth.scaleEqual(0.5f);
+		earthBox.addChild(earth);
+
+		MeshComponent moonring = new Shape();
+
+		MeshComponent moon = GLFactory.getInstance().newCircle(Color.white());
+		moon.setPosition(new Vec(1, 0, 0));
+		moon.scaleEqual(0.2f);
+		GLFactory.getInstance().addRotateAnimation(moonring, 80,
+				new Vec(0, 1, -1));
+		moonring.addChild(moon);
+
+		earthBox.addChild(moonring);
+
 		return o;
 	}
 

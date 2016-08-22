@@ -34,10 +34,12 @@ public class Textured2dShape extends Shape {
 	@Override
 	public void draw(GL10 gl, Renderable parent) {
 		if (myRenderData != null) {
-			gl.glBindTexture(GL10.GL_TEXTURE_2D,
+			if( myPosition != null) {
+				gl.glBindTexture(GL10.GL_TEXTURE_2D,
 					((TexturedRenderData) myRenderData).myTextureId);
-			((GL11Ext) gl).glDrawTexfOES(myPosition.x, myPosition.y,
-					myPosition.z, textureWidth, textureHeight);
+				((GL11Ext) gl).glDrawTexfOES(myPosition.x, myPosition.y,
+						myPosition.z, textureWidth, textureHeight);
+			}
 		}
 	}
 

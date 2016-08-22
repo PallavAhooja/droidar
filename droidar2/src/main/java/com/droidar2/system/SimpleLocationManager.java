@@ -18,7 +18,7 @@ public abstract class SimpleLocationManager {
 	private static final String LOG_TAG = "SimpleLocationManager";
 	private static final long MIN_MS_BEFOR_UPDATE = 200;
 	private static final float MIN_DIST_FOR_UPDATE = 0f;
-	private static boolean stepDetectionEnabled = true;
+	private static boolean stepDetectionEnabled = false;
 	private static int numberOfSimulatedStepsInSameDirection = 4;
 	/**
 	 * This is needed to use step detection only if the accuracy from the other

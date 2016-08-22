@@ -2,61 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.rwth"
     android:versionCode="1"
-    android:versionName="1.0" >
-
-    <application
-        android:icon="@drawable/icon"
-        android:label="@string/app_name" >
-        <activity android:name="droidar2.sample.TechDemoLauncher" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!--
-             IMPORTANT: The following activities have to be added to each project 
-			which imports the DroidAR Library
-        -->
-
-        <activity
-            android:name="com.droidar2.system.ArActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:label="@string/app_name"
-            android:screenOrientation="landscape" >
-        </activity>
-
-        <!-- Custom List is used to easily display lists of any type of object -->
-        <activity android:name="com.droidar2.gui.CustomListActivity" >
-        </activity>
-
-        <!-- the error handler will be automatically displayed when an error appears -->
-        <activity
-            android:name="com.droidar2.system.ErrorHandler"
-            android:process=":myexeptionprocess"
-            android:taskAffinity="com.droidar2.system.ErrorHandler" >
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <data android:mimeType="errors/myUnhandleCatcher" />
-            </intent-filter>
-        </activity>
-
-        <!-- is needed to display information on application startup -->
-        <activity
-            android:name="com.droidar2.gui.InfoScreen"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
-
-        <!-- an activity to easily display any kind of ui -->
-        <activity
-            android:name="com.droidar2.gui.simpleUI.SimpleUIv1"
-            android:theme="@android:style/Theme.Translucent" >
-        </activity>
-    </application>
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -78,5 +24,55 @@
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true" />
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name">
+        <activity android:name="droidar2.sample.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+             IMPORTANT: The following activities have to be added to each project 
+			which imports the DroidAR Library
+        -->
+
+        <activity
+            android:name="com.droidar2.system.ArActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"></activity>
+
+        <!-- Custom List is used to easily display lists of any type of object -->
+        <activity android:name="com.droidar2.gui.CustomListActivity"></activity>
+
+        <!-- the error handler will be automatically displayed when an error appears -->
+        <activity
+            android:name="com.droidar2.system.ErrorHandler"
+            android:process=":myexeptionprocess"
+            android:taskAffinity="com.droidar2.system.ErrorHandler">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:mimeType="errors/myUnhandleCatcher" />
+            </intent-filter>
+        </activity>
+
+        <!-- is needed to display information on application startup -->
+        <activity
+            android:name="com.droidar2.gui.InfoScreen"
+            android:theme="@android:style/Theme.Dialog"></activity>
+
+        <!-- an activity to easily display any kind of ui -->
+        <activity
+            android:name="com.droidar2.gui.simpleUI.SimpleUIv1"
+            android:theme="@android:style/Theme.Translucent"></activity>
+    </application>
 
 </manifest>

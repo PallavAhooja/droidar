@@ -13,6 +13,7 @@ import com.droidar2.worldData.Visitor;
 public class Shape extends MeshComponent {
 
 	private ArrayList<Vec> myShapeArray;
+	private ArrayList<Vec> myNormalArray;
 	protected RenderData myRenderData;
 	private boolean singeSide = false;
 
@@ -35,10 +36,30 @@ public class Shape extends MeshComponent {
 		return myShapeArray;
 	}
 
+	public ArrayList<Vec> getMyNormalArray() {
+		if (myNormalArray == null)
+			myNormalArray = new ArrayList<Vec>();
+		return myNormalArray;
+	}
+
 	public void add(Vec v) {
 		if (myShapeArray == null)
 			myShapeArray = new ArrayList<Vec>();
 		myShapeArray.add(v.copy());
+
+		if (myRenderData == null)
+			myRenderData = new RenderData();
+		myRenderData.updateShape(myShapeArray);
+	}
+
+	public void add(Vec v, Vec vn) {
+		if (myShapeArray == null)
+			myShapeArray = new ArrayList<Vec>();
+		myShapeArray.add(v.copy());
+
+		if (myNormalArray == null)
+			myNormalArray = new ArrayList<Vec>();
+		myNormalArray.add(vn.copy());
 
 		if (myRenderData == null)
 			myRenderData = new RenderData();

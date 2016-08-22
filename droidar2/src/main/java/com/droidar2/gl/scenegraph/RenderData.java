@@ -28,7 +28,39 @@ public class RenderData {
 		normalsBuffer = getNormalsBuffer(shape);
 	}
 
-	private FloatBuffer getNormalsBuffer(ArrayList<Vec> shape) {
+	public void updateShape(ArrayList<Vec> shape, ArrayList<Vec> normal) {
+		setVertexArray(turnShapeToFloatArray(shape));
+		normalsBuffer = getNormalsBuffer(shape, normal);
+	}
+
+	public FloatBuffer getNormalsBuffer(ArrayList<Vec> shape, ArrayList<Vec> normal) {
+
+		// don't use normals if the shape does not consist of triangles:
+		if (normal.size() % 3 != 0)
+			return null;
+
+		/*
+		 * This will take always 3 vecs and calculate the normal of the triangle
+		 * defined by these 3 vecs. So the size of the float array has to be
+		 * shapesize *3 ! to store the x y and z value of the normal vector
+		 */
+
+		float[] normalsArray = new float[normal.size() * 3];
+		int currentNormalsIndex = 0;
+
+		// Log.d(LOG_TAG, "shape.size()=" + shape.size());
+
+		for (int i = 0; i < normal.size(); i ++) {
+
+			currentNormalsIndex = addNormalVectorForVertex(normalsArray,
+					currentNormalsIndex, normal.get(i));
+		}
+
+		return GLUtilityClass.createAndInitFloatBuffer(normalsArray);
+	}
+
+
+	public FloatBuffer getNormalsBuffer(ArrayList<Vec> shape) {
 
 		// don't use normals if the shape does not consist of triangles:
 		if (shape.size() % 3 != 0)
@@ -74,7 +106,7 @@ public class RenderData {
 		return GLUtilityClass.createAndInitFloatBuffer(normalsArray);
 	}
 
-	private int addNormalVectorForVertex(float[] normalsArray, int j,
+	public int addNormalVectorForVertex(float[] normalsArray, int j,
 			Vec normalVec) {
 		normalsArray[j] = normalVec.x;
 		j++;
@@ -84,6 +116,17 @@ public class RenderData {
 		j++;
 		return j;
 	}
+
+//	public int addFaceVertex(float[] normalsArray, int j,
+//							 VertexGeometric vertexGeometric) {
+//		normalsArray[j] = vertexGeometric.x;
+//		j++;
+//		normalsArray[j] = vertexGeometric.y;
+//		j++;
+//		normalsArray[j] = vertexGeometric.z;
+//		j++;
+//		return j;
+//	}
 
 	public void setVertexArray(float[] floatArray) {
 		vertexBuffer = GLUtilityClass.createAndInitFloatBuffer(floatArray);
@@ -117,9 +160,8 @@ public class RenderData {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.droidar2.gl.Renderable#draw(javax.microedition.khronos.opengles.GL10)
+	 * @see gl.Renderable#draw(javax.microedition.khronos.opengles.GL10)
 	 */
-
 	public void draw(GL10 gl) {
 		// Enabled the vertices buffer for writing and to be used during
 		// rendering.

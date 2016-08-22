@@ -39,10 +39,10 @@ public class ActionCalcRelativePos extends Action {
 	 */
 	public static final boolean USE_DEVICE_ALTI_FOR_ZERO = true;
 
-	private static final double MAX_METER_DISTANCE = 1000; // 500 meter
+	private static final double MAX_METER_DISTANCE = 100000; // 500 meter
 	private static final String LOG_TAG = "ActionCalcRelativePos";
 
-	private static final boolean LOG_SHOW_POSITION = false;
+	private static final boolean LOG_SHOW_POSITION = true;
 
 	/**
 	 * this could be replaces by the

@@ -14,6 +14,8 @@ public class TexturedShape extends Shape {
 	 * this values are corresponding to the shape edges
 	 */
 	ArrayList<Vec> myTexturePositions = new ArrayList<Vec>();
+	String mTextureName;
+	Bitmap mTexture;
 
 	/**
 	 * Please read
@@ -26,6 +28,8 @@ public class TexturedShape extends Shape {
 	public TexturedShape(String textureName, Bitmap texture) {
 		super(null);
 		myRenderData = new TexturedRenderData();
+		mTexture = texture;
+		mTextureName = textureName;
 		/*
 		 * TODO redesign this so that the input texture is projected on the mesh
 		 * correctly
@@ -48,6 +52,29 @@ public class TexturedShape extends Shape {
 		myRenderData.updateShape(getMyShapeArray());
 		((TexturedRenderData) myRenderData)
 				.updateTextureBuffer(myTexturePositions);
+	}
+
+	public void add(Vec vec, Vec vn, float x, float y) {
+		getMyShapeArray().add(vec);
+		getMyNormalArray().add(vn);
+		// z coordinate not needed for 2d textures:
+		myTexturePositions.add(new Vec(x, y, 0));
+
+	}
+	public void updateRest(){
+
+		myRenderData.updateShape(getMyShapeArray(), getMyNormalArray());
+		((TexturedRenderData) myRenderData)
+				.updateTextureBuffer(myTexturePositions);
+		if (mTexture != null) {
+			mTexture = TextureManager.getInstance().resizeBitmapIfNecessary(
+					mTexture);
+			TextureManager.getInstance().addTexture(
+					(TexturedRenderData) myRenderData, mTexture, mTextureName);
+		} else {
+			Log.e("TexturedShape",
+					"got null-bitmap! check bitmap creation process");
+		}
 	}
 
 	@Override

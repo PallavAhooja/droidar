@@ -202,11 +202,16 @@ public class TextureManager implements HasDebugInformation {
 		 * calc log2(x) (log2(x) can be calculated with log(x)/log(2)) and get
 		 * the next bigger integer value. then calc 2^this value
 		 */
+		if( ((int)x & (int)(double)(x-1)) == 0){
+			return (int)x;
+
+		}
 		double x2 = Math.pow(2, Math.floor(Math.log(x) / Math.log(2)) + 1);
 		if (x2 != x) {
 			return (int) x2;
 		}
 		return (int) x;
+
 	}
 
 	@Override
