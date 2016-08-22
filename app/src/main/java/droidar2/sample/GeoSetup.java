@@ -67,7 +67,6 @@ public class GeoSetup extends DefaultARSetup {
         Obj textObj =objectFactory.newTextObject("Pick Up Point", o.getVirtualPosition(),
                 getActivity(), camera, o);
 
-        o.getMeshComp().setScale(new Vec(1, 1, 1));
 
 //
 //		world.add(objectFactory.newSolarSystem(new Vec(-10, 1, 1), o));
