@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 
 import com.droidar2.commands.ui.CommandShowToast;
 
-import de.rwth.R;
 import droidar2.sample.setups.CollectItemsSetup;
 import droidar2.sample.setups.DebugSetup;
 import droidar2.sample.setups.FarAwayPOIScenarioSetup;

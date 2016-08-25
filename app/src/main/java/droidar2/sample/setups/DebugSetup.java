@@ -44,7 +44,8 @@ import com.droidar2.commands.system.CameraSetARInputCommand;
 import com.droidar2.commands.system.CommandPlaySound;
 import com.droidar2.commands.ui.CommandShowToast;
 
-import de.rwth.R;
+import droidar2.sample.R;
+
 
 /**
  * This setup demonstrates the possible animations, camera movement, textured

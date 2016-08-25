@@ -10,7 +10,8 @@ import com.droidar2.system.DefaultARSetup;
 import com.droidar2.worldData.SystemUpdater;
 import com.droidar2.worldData.World;
 import android.app.Activity;
-import de.rwth.R;
+
+import droidar2.sample.R;
 
 public class GameDemoSetup extends DefaultARSetup {
 	private GameParticipant p;

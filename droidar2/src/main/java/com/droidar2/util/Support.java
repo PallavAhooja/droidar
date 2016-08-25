@@ -20,15 +20,19 @@ public class Support {
         boolean hasCamera = context.getPackageManager().hasSystemFeature("android.hardware.camera.any")
                 || context.getPackageManager().hasSystemFeature("android.hardware.camera.front")
                 || context.getPackageManager().hasSystemFeature("android.hardware.camera");
-        if (getGLESVerison(context) >= minGLESVerion && hasCamera) {
+        if (getGLESVersion(context) >= minGLESVerion && hasCamera) {
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
             SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             boolean magnetometer = sensorManager != null
                     && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null;
+            boolean accel = sensorManager != null
+                    && sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null;
+            boolean rotation = sensorManager != null
+                    && sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) != null;
             boolean location = locationManager != null && locationManager.getAllProviders() != null
                     && locationManager.getAllProviders().size() > 0;
 
-            if (location && magnetometer) {
+            if (location && magnetometer && accel && rotation ) {
                 features |= 1;
             }
         }
@@ -36,7 +40,7 @@ public class Support {
         return features;
     }
 
-    private static float getGLESVerison(Context context) {
+    private static float getGLESVersion(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo info = activityManager.getDeviceConfigurationInfo();
         return (float) info.reqGlEsVersion;
@@ -47,8 +51,7 @@ public class Support {
 
     }
 
-
-    public boolean supportsAR(Context context) {
+    public static boolean supportsAR(Context context) {
         return (getSupportedFeaturesForDevice(context) & Features.GeoCompass) != 0;
     }
 

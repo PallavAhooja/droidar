@@ -26,7 +26,8 @@ import android.app.Activity;
 import com.droidar2.commands.ui.CommandShowToast;
 import com.droidar2.components.ProximitySensor;
 
-import de.rwth.R;
+import droidar2.sample.R;
+
 
 public class CollectItemsSetup extends Setup {
 

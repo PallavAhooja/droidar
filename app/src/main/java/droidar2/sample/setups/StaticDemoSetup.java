@@ -36,7 +36,8 @@ import android.widget.LinearLayout.LayoutParams;
 import com.droidar2.commands.Command;
 import com.droidar2.commands.ui.CommandShowToast;
 
-import de.rwth.R;
+import droidar2.sample.R;
+
 
 public class StaticDemoSetup extends Setup {
 

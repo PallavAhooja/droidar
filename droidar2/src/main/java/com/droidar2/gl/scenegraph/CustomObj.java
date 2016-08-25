@@ -66,13 +66,13 @@ public class CustomObj implements RenderableEntity {
         gl.glPushMatrix();
         gl.glRotatef(mRotationAngle, 0, 0, 1);
 
-        Material material = mBuilder.materialLib.get("Material__25");
-
-        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_AMBIENT, material.ka.toFloat(), 0);
-        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_DIFFUSE, material.kd.toFloat(), 0);
-        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_SPECULAR, material.ks.toFloat(), 0);
-        gl.glMaterialf(gl.GL_FRONT_AND_BACK, gl.GL_SHININESS,
-                Math.min(Math.max((float)material.nsExponent, 0), 128));
+//        Material material = mBuilder.materialLib.get("Material__25");
+//
+//        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_AMBIENT, material.ka.toFloat(), 0);
+//        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_DIFFUSE, material.kd.toFloat(), 0);
+//        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_SPECULAR, material.ks.toFloat(), 0);
+//        gl.glMaterialf(gl.GL_FRONT_AND_BACK, gl.GL_SHININESS,
+//                Math.min(Math.max((float)material.nsExponent, 0), 128));
 
 
         // Enabled the vertices buffer for writing and to be used during
