@@ -88,9 +88,9 @@ public class GLFactory {
 
 	public Shape newTreangle(Color canBeNull) {
 		Shape s = new Shape(canBeNull);
-		s.add(new Vec(0, 0, 0.8f));
-		s.add(new Vec(0, 0.8f, 0));
-		s.add(new Vec(0.8f, 0, 0));
+		s.add(new Vec(0, 0, 2.8f));
+		s.add(new Vec(0, 2.8f, 0));
+		s.add(new Vec(2.8f, 0, 0));
 		return s;
 	}
 
@@ -231,31 +231,32 @@ public class GLFactory {
 
 		MultiColoredShape s = new MultiColoredShape();
 
-		s.add(new Vec(-x, 0, height), top);
-		s.add(new Vec(1, 0, 0), edge1);
-		s.add(new Vec(-y, 0, -height), bottom);
+		s.add(new Vec(-x, 0, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s.add(new Vec(1, 0, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge1);
+		s.add(new Vec(-y, 0, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
 
 		MultiColoredShape s2 = new MultiColoredShape();
-		s2.add(new Vec(0, -x, height), top);
-		s2.add(new Vec(0, 1, 0), edge2);
-		s2.add(new Vec(0, -y, -height), bottom);
+		s2.add(new Vec(0, -x, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s2.add(new Vec(0, 1, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge2);
+		s2.add(new Vec(0, -y, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
 
 		MultiColoredShape s3 = new MultiColoredShape();
-		s3.add(new Vec(x, 0, height), top);
-		s3.add(new Vec(-1, 0, 0), edge1);
-		s3.add(new Vec(y, 0, -height), bottom);
+		s3.add(new Vec(x, 0, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s3.add(new Vec(-1, 0, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge1);
+		s3.add(new Vec(y, 0, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
 
 		MultiColoredShape s4 = new MultiColoredShape();
-		s4.add(new Vec(0, x, height), top);
-		s4.add(new Vec(0, -1, 0), edge2);
-		s4.add(new Vec(0, y, -height), bottom);
+		s4.add(new Vec(0, x, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s4.add(new Vec(0, -1, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge2);
+		s4.add(new Vec(0, y, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
 
 		pyr.addChild(s);
 		pyr.addChild(s2);
 		pyr.addChild(s3);
 		pyr.addChild(s4);
 
-		GLFactory.getInstance().addRotateAnimation(pyr, 120, new Vec(0, 0, 1));
+		//GLFactory.getInstance().addRotateAnimation(pyr, 120, new Vec(0, 0, 1));
+
 
 		return pyr;
 	}

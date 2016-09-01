@@ -31,7 +31,7 @@ public class AnimationMove extends GLAnimation {
 	public boolean update(float timeDelta, Updateable parent) {
 		if (!done) {
 			Vec.morphToNewVec(pos, relativeTargetPos, timeDelta / timeToMove);
-			if (Vec.distance(pos, relativeTargetPos) < MIN_DISTANCE) {
+			if (Vec.distance(pos, relativeTargetPos) > MIN_DISTANCE) {
 				done = true;
 			}
 		}

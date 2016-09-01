@@ -45,6 +45,7 @@ public class RadarView extends SimpleCustomView implements Updateable {
 	private UpdateTimer myTimer;
 	private float myUpdateSpeed = DEFAULT_UPDATE_SPEED;
 	private double myTouchScaleFactor = 5;
+	private Canvas myCanvas;
 
 	private String debug;
 
@@ -120,9 +121,6 @@ public class RadarView extends SimpleCustomView implements Updateable {
 		this.minimumSize = minimumViewSize;
 		setSize(minimumViewSize);
 
-		if (isInEditMode())
-			loadDemoValues();
-
 	}
 
 	public void setSize(int viewSize) {
@@ -175,7 +173,30 @@ public class RadarView extends SimpleCustomView implements Updateable {
 		myRotation = rotation;
 		myRotVec = new Vec(myHalfSize / 2.5f, 0, 0);
 		myRotVec.rotateAroundZAxis(rotation - 90);
-		this.postInvalidate();
+	//	this.postInvalidate();
+	}
+
+	public void refreshView(){
+		Canvas canvas = myCanvas;
+		drawBackGround(canvas);
+
+		if (items != null)
+			drawItems(canvas);
+
+		paint.setColor(Color.BLACK);
+		drawCircle(canvas, myHalfSize, myHalfSize, myHalfSize / 30, paint);
+
+		linePaint.setColor(Color.BLACK);
+		drawCircle(canvas, myHalfSize, myHalfSize, myHalfSize - MARGIN,
+				linePaint);
+
+		drawCompassNeedle(canvas);
+
+		if (debug != null) {
+			paint.setColor(Color.RED);
+			canvas.drawText(debug, 0, myHalfSize, paint);
+		}
+
 	}
 
 	@Override
@@ -184,6 +205,7 @@ public class RadarView extends SimpleCustomView implements Updateable {
 		 * TODO store in bitmap object and only redraw if something changes to
 		 * increase performance!
 		 */
+		myCanvas = canvas;
 		drawBackGround(canvas);
 
 		if (items != null)
@@ -235,8 +257,8 @@ public class RadarView extends SimpleCustomView implements Updateable {
 		for (int i = 0; i < items.myLength; i++) {
 			if (items.get(i) instanceof HasPosition) {
 				RenderableEntity element = items.get(i);
-				Vec pos = ((HasPosition) element).getPosition().copy()
-						.sub(myCamera.getPosition());
+				Vec pos = ((HasPosition) element).getPosition().copy();
+						//.sub(myCamera.getPosition());
 
 				float length = pos.getLength();
 				if (length > myDisplRadius) {
@@ -330,8 +352,14 @@ public class RadarView extends SimpleCustomView implements Updateable {
 
 	@Override
 	public boolean update(float timeDelta, Updateable parent) {
+		try {
+			if( items != null)
+				refreshView();
+		} catch (Exception E){
+
+		}
 		if (myTimer.update(timeDelta, parent)) {
-			setRotation(myCamera.getCameraAnglesInDegree()[0]);
+		//	setRotation(myCamera.getCameraAnglesInDegree()[0]);
 		}
 		/*
 		 * TODO if view was removed from parent it can return false here!

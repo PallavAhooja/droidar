@@ -3,6 +3,7 @@ package com.droidar2.components;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GLCamera;
 import com.droidar2.gl.scenegraph.MeshComponent;
+import com.droidar2.util.Log;
 import com.droidar2.util.Vec;
 import com.droidar2.worldData.Entity;
 import com.droidar2.worldData.MoveComp;
@@ -23,10 +24,10 @@ public class DirectionComp implements Entity {
     private Vec camVec = new Vec();
 
 
-    public DirectionComp(GLCamera myCamera, float updateSpeed, GeoObj geoObj) {
+    public DirectionComp(GLCamera myCamera, float updateSpeed) {
         this.myCamera = myCamera;
         timer = new UpdateTimer(updateSpeed, null);
-        this.geoObj = geoObj;
+   //     this.geoObj = geoObj;
     }
 
     @Override
@@ -52,25 +53,24 @@ public class DirectionComp implements Entity {
 //            camVec.y = rayPos[1];
 //            camVec.z = rayPos[2];
 
-            camVec  = myCamera.getPositionOnGroundWhereTheCameraIsLookingAt();
+            float [] cameraPos = new float[4];
+            float [] cameraRay = new float[4];
+            myCamera.getCameraViewDirectionRay(cameraPos, cameraRay);
+            camVec = new Vec(cameraRay[0], cameraRay[1], cameraRay[2]);
 //            camVec  = myCamera.getPosition().copy();
 
-            Vec dirVec = geoObj.getVirtualPosition().copy();
+            Vec dirVec = new Vec(5,5,5);//geoObj.getVirtualPosition().copy();
 //            dirVec.normalize();
-            Vec arrowPos = new Vec(5,5,0);
-            dirVec.sub(arrowPos);
-            dirVec.normalize();
-            dirVec.mult(180f);
 
 
             if (parent instanceof Obj) {
                 MeshComponent mc = ((Obj) parent).getGraphicsComponent() ;
-                mc.setRotation(dirVec);
+             //   mc.setRotation(dirVec);
 
 
                 MoveComp m =((Obj)parent).getComp(MoveComp.class);
                 if (m != null) {
-                    m.myTargetPos = arrowPos;
+                    m.myTargetPos = new Vec(-10,0,0);
 
                 }
             }
