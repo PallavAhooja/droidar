@@ -6,6 +6,7 @@ import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.Color;
 import com.droidar2.gl.GL1Renderer;
 import com.droidar2.gl.GLFactory;
+import com.droidar2.gl.animations.AnimationFaceObject;
 import com.droidar2.gl.animations.AnimationFaceToCamera;
 import com.droidar2.gl.scenegraph.MeshComponent;
 import com.droidar2.gl.scenegraph.Shape;
@@ -24,6 +25,7 @@ public class TestSetup extends DefaultARSetup {
 	private DirectionComp directionComp;
 	private MoveComp moveComp;
 	private Obj selectedObj;
+	GeoObj triangleGeo;
 
 
 	@Override
@@ -56,30 +58,26 @@ public class TestSetup extends DefaultARSetup {
 								R.drawable.hippopotamus64));
 		triangleMesh.addChild(new AnimationFaceToCamera(camera, 0.5f));
 		triangleMesh.setScale(new Vec(5, 5, 5));
-		GeoObj triangleGeo = new GeoObj(GeoObj.newRandomGeoObjAroundCamera(
-				camera, 25f, 75f), triangleMesh);
+		triangleGeo = new GeoObj(GeoObj.newRandomGeoObjAroundCamera(
+				camera, 15f, 60f), triangleMesh);
+//		triangleGeo = new GeoObj();
+		triangleGeo.setComp(triangleMesh);
+//		triangleGeo.setVirtualPosition(new Vec(0, -40, 0));
 		world.add(triangleGeo);
 
 		directionComp = new DirectionComp(camera,0.1f,triangleGeo);
-		moveComp = new MoveComp(4);
+		moveComp = new MoveComp(8);
 		world.add(newObject());
-
-	}
-
-
-	@Override
-	public void _d_addElementsToUpdateThread(SystemUpdater updater) {
-		super._d_addElementsToUpdateThread(updater);
-
-//		updater.addObjectToUpdateCycle();
 
 	}
 
 	private Obj newObject() {
 		final Obj obj = new Obj();
 		Color c = Color.getRandomRGBColor();
-		c.alpha = 0.7f;
-		MeshComponent diamond = GLFactory.getInstance().newDiamond(c);
+		c.alpha = 0.8f;
+//		MeshComponent diamond = GLFactory.getInstance().newCuror();
+		MeshComponent diamond = GLFactory.getInstance().newRaoCuror();
+//		diamond.setRotation(new Vec(90,0,0));
 		obj.setComp(diamond);
 		setComps(obj);
 
@@ -101,6 +99,7 @@ public class TestSetup extends DefaultARSetup {
 		}
 		obj.setComp(directionComp);
 		obj.setComp(moveComp);
+		obj.getGraphicsComponent().addChild(new AnimationFaceObject(triangleGeo));
 		selectedObj = obj;
 	}
 

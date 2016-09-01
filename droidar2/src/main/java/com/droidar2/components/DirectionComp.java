@@ -2,7 +2,10 @@ package com.droidar2.components;
 
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GLCamera;
+import com.droidar2.gl.GLFactory;
+import com.droidar2.gl.GLRenderer;
 import com.droidar2.gl.scenegraph.MeshComponent;
+import com.droidar2.gl.scenegraph.Shape;
 import com.droidar2.util.Vec;
 import com.droidar2.worldData.Entity;
 import com.droidar2.worldData.MoveComp;
@@ -48,24 +51,35 @@ public class DirectionComp implements Entity {
             float[] rayPos = new float[4];
             myCamera.getCameraViewDirectionRay(rayPos, rayDir);
 
-//            camVec.x = rayPos[0];
-//            camVec.y = rayPos[1];
-//            camVec.z = rayPos[2];
+            Vec dir =  new Vec();
+            Vec pos = new Vec();
 
-            camVec  = myCamera.getPositionOnGroundWhereTheCameraIsLookingAt();
+//            myCamera.getPickingRay(dir,pos,0,0);
+            myCamera.getPickingRay(pos, dir, GLRenderer.halfWidth,
+                     GLRenderer.halfHeight);
+
+            dir.setLength(5f);
+
+           camVec = dir.add(pos);
+
+//            camVec  = myCamera.getPositionOnGroundWhereTheCameraIsLookingAt();
 //            camVec  = myCamera.getPosition().copy();
 
             Vec dirVec = geoObj.getVirtualPosition().copy();
 //            dirVec.normalize();
-            Vec arrowPos = new Vec(5,5,0);
+            Vec arrowPos = camVec;
+//            arrowPos.normalize();
+//            arrowPos.mult(6);
+
             dirVec.sub(arrowPos);
             dirVec.normalize();
             dirVec.mult(180f);
 
 
+
             if (parent instanceof Obj) {
                 MeshComponent mc = ((Obj) parent).getGraphicsComponent() ;
-                mc.setRotation(dirVec);
+//                mc.setRotation(dirVec);
 
 
                 MoveComp m =((Obj)parent).getComp(MoveComp.class);
@@ -84,6 +98,16 @@ public class DirectionComp implements Entity {
 //            }
 //
 //            onPositionUpdate(parent, targetVec);
+
+
+//            Vec direction = pos.copy().sub(myCamera.getPositionOnGroundWhereTheCameraIsLookingAt());
+//            float length = direction.getLength();
+//            direction.mult(-1);
+
+//            Vec lineEndPos = direction.copy().setLength(-10);
+//            ((Shape)parent).setMyRenderData(GLFactory.getInstance()
+//                    .newDirectedPath(lineEndPos, null).getMyRenderData());
+
         }
         return true;
 

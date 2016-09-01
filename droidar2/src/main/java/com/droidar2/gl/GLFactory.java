@@ -220,6 +220,19 @@ public class GLFactory {
 		float x = 0.7f;
 		float y = 0f;
 		MeshComponent a = newArrow(x, y, height, top, edge1, bottom, edge2);
+		a.setScale(new Vec(-0.3f, -0.3f, -0.3f));
+		return a;
+	}
+
+	public MeshComponent newRaoCuror() {
+		Color top = Color.silver1();
+		Color bottom = Color.silver2();
+		Color edge1 = Color.blackTransparent();
+		Color edge2 = Color.blackTransparent();
+		float height = 2;
+		float x = 0.7f;
+		float y = 0f;
+		MeshComponent a = newVishwas(x, y, height, top, edge1, bottom, edge2);
 		a.setScale(new Vec(0.3f, 0.3f, 0.3f));
 		return a;
 	}
@@ -255,9 +268,47 @@ public class GLFactory {
 		pyr.addChild(s3);
 		pyr.addChild(s4);
 
-		GLFactory.getInstance().addRotateAnimation(pyr, 120, new Vec(0, 0, 1));
+//		GLFactory.getInstance().addRotateAnimation(pyr, 120, new Vec(0, 0, 1));
 
 		return pyr;
+	}
+
+	public MeshComponent newVishwas(float x, float y, float height, Color top,
+								   Color edge1, Color bottom, Color edge2) {
+
+		MeshComponent pyr = new Shape(null);
+
+		MultiColoredShape s = new MultiColoredShape();
+
+		s.add(new Vec(-x, 0, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s.add(new Vec(1, 0, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge1);
+		s.add(new Vec(-y, 0, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
+
+		MultiColoredShape s2 = new MultiColoredShape();
+		s2.add(new Vec(0, -x, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s2.add(new Vec(0, 1, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge2);
+		s2.add(new Vec(0, -y, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
+
+		MultiColoredShape s3 = new MultiColoredShape();
+		s3.add(new Vec(x, 0, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s3.add(new Vec(-1, 0, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge1);
+		s3.add(new Vec(y, 0, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
+
+		MultiColoredShape s4 = new MultiColoredShape();
+		s4.add(new Vec(0, x, height).rotateAroundXAxis(90).rotateAroundZAxis(180), top);
+		s4.add(new Vec(0, -1, 0).rotateAroundXAxis(90).rotateAroundZAxis(180), edge2);
+		s4.add(new Vec(0, y, -height).rotateAroundXAxis(90).rotateAroundZAxis(180), bottom);
+
+
+		pyr.addChild(s);
+		pyr.addChild(s2);
+		pyr.addChild(s3);
+		pyr.addChild(s4);
+
+//		GLFactory.getInstance().addRotateAnimation(pyr, 120, new Vec(0, 0, 1));
+
+		return pyr;
+
 	}
 
 	public GeoObj newPositionMarker(GLCamera camera) {
