@@ -7,6 +7,8 @@ import android.widget.Toast;
 import com.droidar2.system.ArActivity;
 import com.droidar2.util.Support;
 
+import droidar2.sample.setups.TestSetup;
+
 public class MainActivity extends Activity {
 
     @Override
@@ -16,9 +18,11 @@ public class MainActivity extends Activity {
 
         Toast.makeText(this,Support.supportsAR(this)+"-",Toast.LENGTH_SHORT).show();
 
-        ArActivity.startWithSetup(MainActivity.this,
-                new GeoSetup(MainActivity.this,28.411882, 77.041739, "Beautiful Girl"));
+//        ArActivity.startWithSetup(MainActivity.this,
+//                new GeoSetup(MainActivity.this,28.411882, 77.041739, "Beautiful Girl"));
 
+
+        ArActivity.startWithSetup(MainActivity.this,new TestSetup());
 
 
 

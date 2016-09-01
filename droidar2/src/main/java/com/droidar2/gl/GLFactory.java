@@ -690,6 +690,7 @@ public class GLFactory {
 				new Vec(0, 1, -1));
 		moonring.addChild(moon);
 
+
 		earthBox.addChild(moonring);
 
 		return o;
