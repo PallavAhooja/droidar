@@ -8,7 +8,10 @@ import android.os.Environment;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GL1Renderer;
 import com.droidar2.gl.GLFactory;
+import com.droidar2.gl.animations.AnimationFaceToObject;
+import com.droidar2.gl.animations.AnimationStickToCameraCenter;
 import com.droidar2.gl.scenegraph.CustomObj;
+import com.droidar2.gl.scenegraph.MeshComponent;
 import com.droidar2.gl.textures.TexturedShape;
 import com.droidar2.oobjloader.builder.Build;
 import com.droidar2.oobjloader.builder.Face;
@@ -16,6 +19,7 @@ import com.droidar2.oobjloader.builder.FaceVertex;
 import com.droidar2.oobjloader.builder.Material;
 import com.droidar2.oobjloader.parser.Parse;
 import com.droidar2.system.DefaultARSetup;
+import com.droidar2.util.Log;
 import com.droidar2.util.Vec;
 import com.droidar2.worldData.Obj;
 import com.droidar2.worldData.World;
@@ -32,15 +36,16 @@ public class GeoSetup extends DefaultARSetup {
 
     private double mLat, mLng;
     private String mModelName;
+    private File mDir;
 
     private Context context;
 
-    public GeoSetup(Context context, double mLat, double mLng, String modelName) {
+    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName) {
         this.mLat = mLat;
         this.mLng = mLng;
         this.context = context;
         this.mModelName = modelName;
-
+        this.mDir = dir;
 
 /*
         try {
@@ -62,14 +67,14 @@ public class GeoSetup extends DefaultARSetup {
 //    GeoObj o = GeoObj.rwthI9;
 
         GeoObj o = new GeoObj(mLat, mLng, 100);
-        o.setMaxVectorLength(1);
-
-        Obj textObj =objectFactory.newTextObject("Pick Up Point", o.getVirtualPosition(),
+        o.setMaxVectorLength(30f);
+//
+        Obj textObj = objectFactory.newTextObject("Pick Up Point", o.getVirtualPosition(),
                 getActivity(), camera, o);
 
 
 //
-//		world.add(objectFactory.newSolarSystem(new Vec(-10, 1, 1), o));
+//	  world.add(objectFactory.newSolarSystem(new Vec(-10, 1, 1), o));
 
 //    o.setComp(objectFactory.newTextObject("pp",new Vec(10,1,1),getActivity(),camera));
 //    world.add(o);
@@ -79,17 +84,16 @@ public class GeoSetup extends DefaultARSetup {
         Build builder = new Build();
         Parse obj = null;
         try {
-            obj = new Parse(builder, this.context, this.mModelName);
-        } catch (Exception E){
-
+            obj = new Parse(builder, this.context, this.mDir,this.mModelName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if( builder.groups.isEmpty()) {
             CustomObj customObj = new CustomObj(builder);
             //o.setComp(customObj);
             o.getGraphicsComponent().addChild(customObj);
-        }
-        else {
+        } else {
             Iterator it = builder.groups.entrySet().iterator();
             Iterator itMaterials = builder.materialLib.entrySet().iterator();
             boolean add = true;
@@ -102,18 +106,18 @@ public class GeoSetup extends DefaultARSetup {
                 String key = (String) pair.getKey();
                 Material material = (Material) pair.getValue();
 
-                String filename = "/AR/" + this.mModelName + "/Texture/" + material.mapKdFilename;
-                File file = new File(Environment.getExternalStorageDirectory() + filename);
+                String filename = this.mModelName + "/Texture/" + material.mapKdFilename;
+                File file = new File(mDir,filename);
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-                TexturedShape shape = new TexturedShape( material.name, bitmap);
-                Shapes.put( material.name, shape);
+                TexturedShape shape = new TexturedShape(material.name, bitmap);
+                Shapes.put(material.name, shape);
                 index++;
             }
 
 
-            for( Face face: builder.faces){
-                if( face.material != null){
+            for (Face face : builder.faces) {
+                if (face.material != null) {
                     TexturedShape shape = Shapes.get(face.material.name);
                     for (FaceVertex vertex : face.vertices) {
                         shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
@@ -166,6 +170,18 @@ public class GeoSetup extends DefaultARSetup {
         o.refreshVirtualPosition();
         world.add(o);
 
+        world.add(newArrow(o));
+
+    }
+
+
+    private Obj newArrow(Obj targetObj) {
+        final Obj obj = new Obj();
+        MeshComponent diamond = GLFactory.getInstance().newCuror();
+        obj.setComp(diamond);
+        obj.getMeshComp().addAnimation(new AnimationFaceToObject(targetObj, false));
+        obj.getMeshComp().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f));
+        return obj;
     }
 
 

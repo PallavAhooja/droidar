@@ -75,11 +75,13 @@ public class Parse {
     File objFile = null;
     private String mModelName;
     private Context context;
+    File dir;
 
-    public Parse(BuilderInterface builder, Context context, String modelName) throws FileNotFoundException, IOException {
+    public Parse(BuilderInterface builder, Context context,File dir,String modelName) throws FileNotFoundException, IOException {
         this.builder = builder;
         mModelName = modelName;
         this.context = context;
+        this.dir = dir;
         parseObjFile();
 
     }
@@ -88,15 +90,15 @@ public class Parse {
         int lineCount = 0;
 
         String line = null;
-        String filename = "/AR/" + this.mModelName + "/" + this.mModelName + ".obj";
-        this.mModelName = "/AR/" + this.mModelName;
+        String filePath = this.mModelName + "/" + this.mModelName + ".obj";
+//        this.mModelName = "/AR/" + this.mModelName;
         FileInputStream fis = null;
         try {
-             File file = new File(Environment.getExternalStorageDirectory() + filename);
+             File file = new File(dir,filePath);
              fis = new FileInputStream(file);
-        } catch ( Exception E)
+        } catch ( Exception e)
         {
-            int i = 0;
+            e.printStackTrace();
         }
         InputStreamReader isr = new InputStreamReader(fis);
         BufferedReader bufferedReader = new BufferedReader(isr);
@@ -648,7 +650,7 @@ public class Parse {
         int lineCount = 0;
 
         //FileInputStream fis = context.openFileInput(this.mModelName + "/" + mtlFilename);
-        File file = new File(Environment.getExternalStorageDirectory() + this.mModelName + "/" + mtlFilename);
+        File file = new File(dir , this.mModelName + "/" + mtlFilename);
         FileInputStream fis = new FileInputStream(file);
         InputStreamReader isr = new InputStreamReader(fis);
         BufferedReader bufferedReader = new BufferedReader(isr);

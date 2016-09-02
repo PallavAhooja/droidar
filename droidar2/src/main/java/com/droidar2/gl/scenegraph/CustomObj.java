@@ -63,8 +63,8 @@ public class CustomObj implements RenderableEntity {
     @Override
     public void render(GL10 gl, Renderable parent) {
 
-        gl.glPushMatrix();
-        gl.glRotatef(mRotationAngle, 0, 0, 1);
+//        gl.glPushMatrix();
+//        gl.glRotatef(mRotationAngle, 0, 0, 0);
 
 //        Material material = mBuilder.materialLib.get("Material__25");
 //
@@ -98,10 +98,10 @@ public class CustomObj implements RenderableEntity {
         // Disable normals array (for lightning):
         gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 
-        mRotationAngle += 5;
+//        mRotationAngle += 5;
 
 
-        gl.glPopMatrix();
+//        gl.glPopMatrix();
 
 
     }

@@ -101,7 +101,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
      */
     private boolean isDeleted = false;
 
-    private double myMaxVectorLength = 0;
+    private float myMaxVectorLength = 0f;
 
     // Vec myPosition=new Vec();
 
@@ -391,7 +391,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
                     (int) (getLongitude() * 1E6));
     }
 
-    public void setMaxVectorLength(double max) {
+    public void setMaxVectorLength(float max) {
         this.myMaxVectorLength = max;
     }
 
@@ -434,32 +434,31 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
         Log.i(LOG_TAG, "Original Position: " + position);
 
-        if (myMaxVectorLength != 0d) {
+        if (myMaxVectorLength != 0f && position.getLength() > myMaxVectorLength) {
 
-            float x = position.x;
-            float y = position.y;
-            int countX = 0;
-            while (Math.abs(x) > this.myMaxVectorLength) {
-                x /= 10;
-                countX++;
-            }
 
-            int countY = 0;
-            while (Math.abs(y) > this.myMaxVectorLength) {
-                y /= 10;
-                countY++;
-            }
-            int totalReductions = countX > countY ? countY : countX;
+        position.setLength(myMaxVectorLength);
+//            float x = position.x;
+//            float y = position.y;
+//            int countX = 0;
+//            while (Math.abs(x) > this.myMaxVectorLength) {
+//                x /= 10;
+//                countX++;
+//            }
+//
+//            int countY = 0;
+//            while (Math.abs(y) > this.myMaxVectorLength) {
+//                y /= 10;
+//                countY++;
+//            }
+//            int totalReductions = countX > countY ? countY : countX;
+//
+//            int count = 0;
+//            for (; count < totalReductions; count++) {
+//                position.x /= 10;
+//                position.y /= 10;
+//            }
 
-            int count = 0;
-            for (; count < totalReductions; count++) {
-                position.x /= 10;
-                position.y /= 10;
-            }
-
-//		// Force position to 1, 1, 0
-//		position.x = 1;
-//		position.y = 1;
         }
         Log.i(LOG_TAG, "Setting Position to: " + position);
 		/*

@@ -303,7 +303,7 @@ public abstract class Setup {
 	 */
 	public void initializeErrorHandler() {
 		debugLogDoSetupStep(STEP1);
-		ErrorHandler.registerNewErrorHandler(getActivity());
+//		ErrorHandler.registerNewErrorHandler(getActivity());
 	}
 
 	/**

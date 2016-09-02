@@ -44,9 +44,8 @@ public class TestSetup extends DefaultARSetup {
 								R.drawable.hippopotamus64));
 		hippo.addChild(new AnimationFaceToCamera(camera, 0.5f));
 		hippo.setScale(new Vec(5, 5, 5));
-		Obj hippoObj = new Obj();
+		GeoObj hippoObj = GeoObj.newRandomGeoObjAroundCamera(camera,10f,75f);
 		hippoObj.setComp(hippo);
-		hippoObj.setPosition(new Vec(20, 20, 20));
 		world.add(hippoObj);
 		world.add(newObject2(hippoObj));
 		Log.e("World Setup: ", "init");
@@ -73,7 +72,6 @@ public class TestSetup extends DefaultARSetup {
 		MeshComponent diamond = GLFactory.getInstance().newCuror();
 		obj.setComp(diamond);
 		obj.getMeshComp().addAnimation(new AnimationFaceToObject(targetObj, false));
-		obj.setPosition(new Vec(10, 10, 10));
 		obj.getMeshComp().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f));
 		return obj;
 	}
