@@ -750,8 +750,4 @@ public class GeoObj extends Obj implements HasDebugInformation {
         return o;
     }
 
-    public void addArrow() {
-//		setComp();
-    }
-
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.droidar2.oobjloader.builder.VertexGeometric;
 import com.droidar2.util.Vec;
 
 public class RenderData {
@@ -117,16 +118,16 @@ public class RenderData {
 		return j;
 	}
 
-//	public int addFaceVertex(float[] normalsArray, int j,
-//							 VertexGeometric vertexGeometric) {
-//		normalsArray[j] = vertexGeometric.x;
-//		j++;
-//		normalsArray[j] = vertexGeometric.y;
-//		j++;
-//		normalsArray[j] = vertexGeometric.z;
-//		j++;
-//		return j;
-//	}
+	public int addFaceVertex(float[] normalsArray, int j,
+							 VertexGeometric vertexGeometric) {
+		normalsArray[j] = vertexGeometric.x;
+		j++;
+		normalsArray[j] = vertexGeometric.y;
+		j++;
+		normalsArray[j] = vertexGeometric.z;
+		j++;
+		return j;
+	}
 
 	public void setVertexArray(float[] floatArray) {
 		vertexBuffer = GLUtilityClass.createAndInitFloatBuffer(floatArray);

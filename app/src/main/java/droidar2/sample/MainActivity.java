@@ -22,8 +22,8 @@ public class MainActivity extends Activity {
         Toast.makeText(this, Support.supportsAR(this) + "-", Toast.LENGTH_SHORT).show();
 
         ArActivity.startWithSetup(MainActivity.this,
-                new GeoSetup(MainActivity.this, 28.411882, 77.041739,
-                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "arr"));
+                new GeoSetup(MainActivity.this, 28.410297, 77.047490,
+                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "STAND2"));
 
 
 //        ArActivity.startWithSetup(MainActivity.this, new TestSetup());

@@ -93,13 +93,10 @@ public class Parse {
         String filePath = this.mModelName + "/" + this.mModelName + ".obj";
 //        this.mModelName = "/AR/" + this.mModelName;
         FileInputStream fis = null;
-        try {
+
              File file = new File(dir,filePath);
              fis = new FileInputStream(file);
-        } catch ( Exception e)
-        {
-            e.printStackTrace();
-        }
+
         InputStreamReader isr = new InputStreamReader(fis);
         BufferedReader bufferedReader = new BufferedReader(isr);
         //mModelName
@@ -620,12 +617,12 @@ public class Parse {
 
         if (null != matlibnames) {
        //     for (int loopi = 0; loopi < matlibnames.length; loopi++) {
-                try {
+//                try {
                    // parseMtlFile(matlibnames[loopi]);
                     parseMtlFile(matlibnames);
-                } catch (FileNotFoundException e) {
-                   // log.log(SEVERE, "Can't find material file name='" + matlibnames[loopi] + "', e=" + e);
-                }
+//                } catch (FileNotFoundException e) {
+//                   // log.log(SEVERE, "Can't find material file name='" + matlibnames[loopi] + "', e=" + e);
+//                }
            // }
         }
     }
