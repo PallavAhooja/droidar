@@ -191,8 +191,8 @@ public class GeoSetup extends DefaultARSetup {
 
 
             o.refreshVirtualPosition();
-            o.getGraphicsComponent().setRotation(new Vec(0,-90,0));
-            o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
+//            o.getGraphicsComponent().setRotation(new Vec(0,-90,0));
+//            o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
             world.add(o);
 
             world.add(newArrow(o));

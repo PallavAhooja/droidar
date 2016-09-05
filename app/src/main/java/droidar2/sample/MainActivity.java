@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 
         ArActivity.startWithSetup(MainActivity.this,
                 new GeoSetup(MainActivity.this, 28.410297, 77.047490,
-                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "STAND2"));
+                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "stand3"));
 
 
 //        ArActivity.startWithSetup(MainActivity.this, new TestSetup());
