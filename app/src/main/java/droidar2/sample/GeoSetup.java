@@ -196,10 +196,9 @@ public class GeoSetup extends DefaultARSetup {
     private Obj newTextObject(GeoObj geoObj) {
         Obj o = new Obj();
         o.setComp(new Shape());
-        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj));
-        o.getGraphicsComponent().setScale(new Vec(0.7f, 0.7f, 0.7f));
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj,0.5f));
         o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
-        o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 1)));
+        o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
     }
 

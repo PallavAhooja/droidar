@@ -29,15 +29,21 @@ public class DistUpdateComp implements Entity {
     private GeoObj geoObj;
     private String distanceText = "";
     private MeshComponent textMesh;
+    private float textSize;
 
     private Vec camVec = new Vec();
 
 
     public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj) {
+        this(myCamera,updateSpeed,context,geoObj,1);
+    }
+
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj,float textSize) {
         this.myCamera = myCamera;
         timer = new UpdateTimer(updateSpeed, null);
         this.context = context;
         this.geoObj = geoObj;
+        this.textSize = textSize;
     }
 
     @Override
@@ -88,7 +94,6 @@ public class DistUpdateComp implements Entity {
     }
 
     private MeshComponent getText(String text) {
-        float textSize = 1;
 
         TextView v = new TextView(context);
         v.setTypeface(null, Typeface.BOLD);
