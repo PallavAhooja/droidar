@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.droidar2.components.DistUpdateComp;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GL1Renderer;
 import com.droidar2.gl.GLFactory;
+import com.droidar2.gl.animations.AnimationFaceToCamera;
 import com.droidar2.gl.animations.AnimationFaceToObject;
 import com.droidar2.gl.animations.AnimationRotate;
 import com.droidar2.gl.animations.AnimationStickToCameraCenter;
@@ -54,7 +56,7 @@ public class GeoSetup extends DefaultARSetup {
 
 
         GeoObj o = new GeoObj(mLat, mLng, 100);
-        o.setMaxVectorLength(30f);
+        o.setMaxVectorLength(60f);
         o.setComp(new Shape());
 
 
@@ -86,7 +88,7 @@ public class GeoSetup extends DefaultARSetup {
                 Material material = (Material) pair.getValue();
                 if (material.mapKdFilename != null) {
                     String filename = this.mModelName + "/Texture/" + material.mapKdFilename;
-                    File file = new File(mDir + filename);
+                    File file = new File(mDir, filename);
                     BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                     Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
                     TexturedShape shape = new TexturedShape(material.name, bitmap);
@@ -121,17 +123,19 @@ public class GeoSetup extends DefaultARSetup {
                 if (face.material != null) {
                     if (!TShapes.isEmpty()) {
                         TexturedShape shape = TShapes.get(face.material.name);
-                        for (FaceVertex vertex : face.vertices) {
-                            shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
-                                    new Vec(vertex.n.x, vertex.n.y, vertex.n.z), vertex.t.u, vertex.t.v);
-                        }
+                        if (shape != null)
+                            for (FaceVertex vertex : face.vertices) {
+                                shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                        new Vec(vertex.n.x, vertex.n.y, vertex.n.z), vertex.t.u, vertex.t.v);
+                            }
                     }
                     if (!Shapes.isEmpty()) {
                         Shape shape = Shapes.get(face.material.name);
-                        for (FaceVertex vertex : face.vertices) {
-                            shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
-                                    new Vec(vertex.n.x, vertex.n.y, vertex.n.z));
-                        }
+                        if (shape != null)
+                            for (FaceVertex vertex : face.vertices) {
+                                shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                        new Vec(vertex.n.x, vertex.n.y, vertex.n.z));
+                            }
                     }
 
                 } else {
@@ -172,6 +176,8 @@ public class GeoSetup extends DefaultARSetup {
 
             world.add(newArrow(o));
 
+            world.add(newTextObject(o));
+
         }
     }
 
@@ -185,6 +191,16 @@ public class GeoSetup extends DefaultARSetup {
         obj.getMeshComp().addAnimation(new AnimationFaceToObject(targetObj, false));
         obj.getMeshComp().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f));
         return obj;
+    }
+
+    private Obj newTextObject(GeoObj geoObj) {
+        Obj o = new Obj();
+        o.setComp(new Shape());
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj));
+        o.getGraphicsComponent().setScale(new Vec(0.7f, 0.7f, 0.7f));
+        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
+        o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 1)));
+        return o;
     }
 
 

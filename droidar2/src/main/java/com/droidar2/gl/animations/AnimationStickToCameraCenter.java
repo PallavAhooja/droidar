@@ -28,6 +28,8 @@ public class AnimationStickToCameraCenter extends GLAnimation {
     private Vec myTargetCameraPosition;
     private boolean dontChangeXRotation;
 
+    private Vec offset = new Vec();
+
     /**
      * @param targetCamera
      * @param targetMesh
@@ -59,6 +61,9 @@ public class AnimationStickToCameraCenter extends GLAnimation {
         positionVec.y = 0;
         positionVec.z = 0;
     }
+
+
+
 
     /**
      * @param targetCamera
@@ -100,6 +105,8 @@ public class AnimationStickToCameraCenter extends GLAnimation {
             Vec rayDir = new Vec();
             myTargetCamera.getPickingRay(rayPos, rayDir, GLRenderer.halfWidth, GLRenderer.halfHeight);
             newPositionVec = rayPos.copy().add(rayDir.setLength(5));
+            if (adjustmentVec!=null)
+                newPositionVec.add(adjustmentVec);
             ((MeshComponent) parent).setPosition(newPositionVec);
 
         }
