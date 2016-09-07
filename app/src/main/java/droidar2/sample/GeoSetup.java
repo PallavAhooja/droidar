@@ -55,8 +55,9 @@ public class GeoSetup extends DefaultARSetup {
                              GLFactory objectFactory) {
 
 
-        GeoObj o = new GeoObj(mLat, mLng, 100);
-        o.setMaxVectorLength(60f);
+        GeoObj o = new GeoObj(mLat, mLng, 0);
+        o.setMaxVectorLength(100f);
+        o.setMyMinVectorLength(10f);
         o.setComp(new Shape());
 
 
@@ -197,7 +198,7 @@ public class GeoSetup extends DefaultARSetup {
         Obj o = new Obj();
         o.setComp(new Shape());
         o.setComp(new DistUpdateComp(camera, 1f, context, geoObj,0.5f));
-        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
+        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera,0.5f,false));
         o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
     }

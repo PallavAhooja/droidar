@@ -103,6 +103,12 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
     private float myMaxVectorLength = 0f;
 
+    public void setMyMinVectorLength(float myMinVectorLength) {
+        this.myMinVectorLength = myMinVectorLength;
+    }
+
+    private float myMinVectorLength = -1f;
+
     // Vec myPosition=new Vec();
 
     /**
@@ -132,21 +138,21 @@ public class GeoObj extends Obj implements HasDebugInformation {
      * Use this constructor if you want to position the GeoObject relatively to
      * the users GPS position. Set a {@link MeshComponent} and the virtual
      * postion and then extract the PGS coordinates if you need them:
-     * <p/>
+     * <p>
      * <br>
      * <br>
-     * <p/>
+     * <p>
      * GeoObj x=new GeoObj(); <br>
-     * <p/>
+     * <p>
      * x.setComp(addMeshCompHere...); <br>
-     * <p/>
+     * <p>
      * //place it 10 meters north of the users position: <br>
-     * <p/>
+     * <p>
      * x.setVirtualPosition(new Vec(0,10,0)); <br>
      * <br>
-     * <p/>
+     * <p>
      * x.getLatitude()<br>
-     * <p/>
+     * <p>
      * x.getLongitude()<br>
      */
     public GeoObj() {
@@ -191,7 +197,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
             g.removeAllChildren();
             g.addChild((MeshComponent) comp);
             setMyGraphicsComponent(g);
-			/*
+            /*
 			 * if the surround-group was not jet added to the GeoObj it will be
 			 * added now:
 			 */
@@ -248,7 +254,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
      * <br>
      * Vec pos = glCameraInstance.getGPSPositionVec(); <br>
      * GeoObj o = new GeoObj(pos.y, pos.x, pos.z);
-     * <p/>
+     * <p>
      * !Important
      *
      * @param lati  the latitude value (e.g. 48.858306)
@@ -435,31 +441,10 @@ public class GeoObj extends Obj implements HasDebugInformation {
         Log.i(LOG_TAG, "Original Position: " + position);
 
         if (myMaxVectorLength != 0f && position.getLength() > myMaxVectorLength) {
-
-
-        position.setLength(myMaxVectorLength);
-//            float x = position.x;
-//            float y = position.y;
-//            int countX = 0;
-//            while (Math.abs(x) > this.myMaxVectorLength) {
-//                x /= 10;
-//                countX++;
-//            }
-//
-//            int countY = 0;
-//            while (Math.abs(y) > this.myMaxVectorLength) {
-//                y /= 10;
-//                countY++;
-//            }
-//            int totalReductions = countX > countY ? countY : countX;
-//
-//            int count = 0;
-//            for (; count < totalReductions; count++) {
-//                position.x /= 10;
-//                position.y /= 10;
-//            }
-
+            position.setLength(myMaxVectorLength);
         }
+        else if (myMinVectorLength!=-1f && position.getLength() < myMinVectorLength)
+            position.setLength(myMinVectorLength);
         Log.i(LOG_TAG, "Setting Position to: " + position);
 		/*
 		 * the altitude should be respected as well but altitude = 0 should by
