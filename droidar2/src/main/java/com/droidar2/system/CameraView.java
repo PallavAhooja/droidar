@@ -37,6 +37,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		Log.d("Activity", "Camera holder created");
 		mHolder.addCallback(this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
 	}
 
 	@Override
@@ -61,7 +62,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		// parameters.setPreviewSize(w, h);
 		// mCamera.setParameters(parameters);
 
-		setPreviewAccordingToScreenOrientation(width, height);
+//		setPreviewAccordingToScreenOrientation(width, height);
+		setCameraDisplayOrientation(findBackFacingCameraID(),myCamera);
 		resumeCamera();
 	}
 
@@ -120,6 +122,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
+
+
+
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// Surface will be destroyed when we return, so stop the
@@ -155,5 +160,48 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 			Log.d("Activity", "Camera released");
 		}
 	}
+
+	public void setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera) {
+		android.hardware.Camera.CameraInfo info =
+				new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo(cameraId, info);
+		Display display = ((WindowManager) this.getContext().getSystemService(
+				Activity.WINDOW_SERVICE)).getDefaultDisplay();
+
+		int rotation = display.getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0: degrees = 0; break;
+			case Surface.ROTATION_90: degrees = 90; break;
+			case Surface.ROTATION_180: degrees = 180; break;
+			case Surface.ROTATION_270: degrees = 270; break;
+		}
+
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;  // compensate the mirror
+		} else {  // back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		camera.setDisplayOrientation(result);
+	}
+
+	private int findBackFacingCameraID() {
+		int cameraId = -1;
+		// Search for the front facing camera
+		int numberOfCameras = Camera.getNumberOfCameras();
+		for (int i = 0; i < numberOfCameras; i++) {
+			Camera.CameraInfo info = new Camera.CameraInfo();
+			Camera.getCameraInfo(i, info);
+			if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+				Log.d(LOG_TAG, "Camera found");
+				cameraId = i;
+				break;
+			}
+		}
+		return cameraId;
+	}
+
 
 }
