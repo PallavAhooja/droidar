@@ -119,13 +119,9 @@ public class EventManager implements LocationListener, SensorEventListener {
 					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 			sensorManager.registerListener(this, accelSensor,
 					SensorManager.SENSOR_DELAY_GAME);
-			Sensor sensorFusion = sensorManager
-					.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-			sensorManager.registerListener(this, sensorFusion,
-					SensorManager.SENSOR_DELAY_GAME);
 		} else {
 			// Register orientation Sensor Listener:
-			Sensor orientationSensor = sensorManager.getDefaultSensor(11);// Sensor.TYPE_ROTATION_VECTOR);
+			Sensor orientationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);// Sensor.TYPE_ROTATION_VECTOR);
 			sensorManager.registerListener(this, orientationSensor,
 					SensorManager.SENSOR_DELAY_GAME);
 		}
@@ -162,10 +158,13 @@ public class EventManager implements LocationListener, SensorEventListener {
 		// Log.d("sensor onAccuracyChanged", arg0 + " " + arg1);
 	}
 
+
+
+
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-			return;
+		//	return;
 		}
 		float[] values = event.values.clone();
 
@@ -181,6 +180,8 @@ public class EventManager implements LocationListener, SensorEventListener {
 				}
 				// else sensor input is set to orientation mode
 				if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+
+					//Log.d("Calulated OrientationValues:", "" + Double.toString(x) + ", " + Double.toString(y) + ", " + Double.toString(z));
 					onOrientationChangedList.get(i)
 							.onOrientationChanged(values);
 				}

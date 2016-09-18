@@ -1,5 +1,6 @@
 package com.droidar2.system;
 
+import com.droidar2.actions.ActionRotateCameraWithoutGyro;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.CustomGLSurfaceView;
 import com.droidar2.gl.GL1Renderer;
@@ -89,7 +90,8 @@ public abstract class DefaultARSetup extends Setup {
 	public void _c_addActionsToEvents(final EventManager eventManager,
 			CustomGLSurfaceView arView, SystemUpdater updater) {
 		wasdAction = new ActionWASDMovement(camera, 25, 50, 20);
-		rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
+		//rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
+		rotateGLCameraAction = new ActionRotateCameraWithoutGyro(camera);
 		eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
 
 		arView.addOnTouchMoveListener(wasdAction);

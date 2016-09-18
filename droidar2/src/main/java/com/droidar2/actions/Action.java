@@ -20,6 +20,12 @@ public abstract class Action implements EventListener, Updateable {
 	private boolean magnetNotCatchedOutputFlag;
 
 	@Override
+	public boolean onRotationMatrixChanged(float[] values) {
+
+		return false;
+	}
+
+	@Override
 	public boolean onOrientationChanged(float[] values) {
 		Log.e("action event",
 				"onOrientationChanged not catched by defined action: "

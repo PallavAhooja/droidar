@@ -29,4 +29,6 @@ public interface OrientationChangedListener {
 	 * @return
 	 */
 	public abstract boolean onAccelChanged(float[] values);
+
+	public abstract boolean onRotationMatrixChanged(float[] values);
 }

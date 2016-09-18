@@ -50,6 +50,11 @@ public abstract class ActionUseCameraAngles2 implements
 		return true;
 	}
 
+	@Override
+	public boolean onRotationMatrixChanged(float[] values) {
+		return false;
+	}
+
 	private void calcMatrix() {
 		if (mag != null && accel != null && sensorRead) {
 			sensorRead = false;
