@@ -303,7 +303,7 @@ public abstract class Setup {
 	 */
 	public void initializeErrorHandler() {
 		debugLogDoSetupStep(STEP1);
-		ErrorHandler.registerNewErrorHandler(getActivity());
+//		ErrorHandler.registerNewErrorHandler(getActivity());
 	}
 
 	/**
@@ -316,8 +316,8 @@ public abstract class Setup {
 	 */
 	public boolean _a2_initLightning(ArrayList<LightSource> lights) {
 		lights.add(LightSource.newDefaultAmbientLight(GL10.GL_LIGHT0));
-		lights.add(LightSource.newDefaultSpotLight(GL10.GL_LIGHT1, new Vec(5,
-				5, 5), new Vec(0, 0, 0)));
+//		lights.add(LightSource.newDefaultSpotLight(GL10.GL_LIGHT1, new Vec(5,
+//				5, 5), new Vec(0, 0, 0)));
 		// TODO lights.add(LightSource.newDefaultDayLight(GL10.GL_LIGHT1, new
 		// Date()));
 		return true;

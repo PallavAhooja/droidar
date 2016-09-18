@@ -91,6 +91,8 @@ public class Build implements BuilderInterface {
 
         int loopi = 0;
         // @TODO: add better error checking - make sure values is not empty and that it is a multiple of 3
+        FaceVertex[] triangleVerticies = new FaceVertex[3];
+        int vertexCount = 0;
         while (loopi < vertexIndices.length) {
             // >     v is the vertex reference number for a point element. Each point
             // >     element requires one vertex. Positive values indicate absolute
@@ -151,14 +153,25 @@ public class Build implements BuilderInterface {
                 return;
             }
 
+            // Add in Groups of 3
             // Make sure we don't end up with redundant vertice
             // combinations - i.e. any specific combination of g,v and
             // t is only stored once and is reused instead.
-            String key = fv.toString();
-            faceVerticeMap.put(key, fv);
-            fv.index = faceVerticeList.size();
-            faceVerticeList.add(fv);
-            face.add(fv);
+            triangleVerticies[2] = fv;
+            if( vertexCount >= 2) {
+                for( int i=0; i<3; i++) {
+                    FaceVertex fv2 = triangleVerticies[i];
+                    String key = fv2.toString();
+                    faceVerticeMap.put(key, fv);
+                    fv2.index = faceVerticeList.size();
+                    faceVerticeList.add(fv2);
+                    face.add(fv2);
+                }
+                triangleVerticies[1] = triangleVerticies[2];
+            }
+            else
+                triangleVerticies[vertexCount] = fv;
+            vertexCount += 1;
         }
 //        log.log(INFO,"Parsed face=" + face);
         if (currentSmoothingGroup != null) {

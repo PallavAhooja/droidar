@@ -89,12 +89,13 @@ public abstract class DefaultARSetup extends Setup {
 	@Override
 	public void _c_addActionsToEvents(final EventManager eventManager,
 			CustomGLSurfaceView arView, SystemUpdater updater) {
-		wasdAction = new ActionWASDMovement(camera, 25, 50, 20);
+//		wasdAction = new ActionWASDMovement(camera, 25, 50, 20);
 		//rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
 		rotateGLCameraAction = new ActionRotateCameraWithoutGyro(camera);
 		eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
 
-		arView.addOnTouchMoveListener(wasdAction);
+
+//		arView.addOnTouchMoveListener(wasdAction);
 		// eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
 		eventManager.addOnTrackballAction(new ActionMoveCameraBuffered(camera,
 				5, 25));
@@ -137,22 +138,22 @@ public abstract class DefaultARSetup extends Setup {
 
 		guiSetup.addViewToTop(minAccuracyAction.getView());
 
-		guiSetup.addImangeButtonToRightView(R.drawable.arrow_up_float,
-				new Command() {
-					@Override
-					public boolean execute() {
-						camera.changeZPositionBuffered(+ZDELTA);
-						return false;
-					}
-				});
-		guiSetup.addImangeButtonToRightView(R.drawable.arrow_down_float,
-				new Command() {
-					@Override
-					public boolean execute() {
-						camera.changeZPositionBuffered(-ZDELTA);
-						return false;
-					}
-				});
+//		guiSetup.addImangeButtonToRightView(R.drawable.arrow_up_float,
+//				new Command() {
+//					@Override
+//					public boolean execute() {
+//						camera.changeZPositionBuffered(+ZDELTA);
+//						return false;
+//					}
+//				});
+//		guiSetup.addImangeButtonToRightView(R.drawable.arrow_down_float,
+//				new Command() {
+//					@Override
+//					public boolean execute() {
+//						camera.changeZPositionBuffered(-ZDELTA);
+//						return false;
+//					}
+//				});
 
 	}
 

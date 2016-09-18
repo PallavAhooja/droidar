@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
@@ -75,29 +76,58 @@ public class Parse {
     File objFile = null;
     private String mModelName;
     private Context context;
+    File dir;
 
-    public Parse(BuilderInterface builder, Context context, String modelName) throws FileNotFoundException, IOException {
+    private boolean fromRes = false;
+    InputStream resObj,resMtl;
+
+    public Parse(BuilderInterface builder, Context context,File dir,String modelName) throws FileNotFoundException, IOException {
         this.builder = builder;
-        mModelName = modelName;
+        this.mModelName = modelName;
+        this.context = context;
+        this.dir = dir;
+        parseObjFile();
+    }
+
+    // TODO: 05/09/16 Make res code more generic
+    public Parse(BuilderInterface builder, Context context, InputStream obj, InputStream mtl) throws FileNotFoundException, IOException {
+        this.fromRes = true;
+        this.builder = builder;
+        this.resObj = obj;
+        this.resMtl = mtl;
+        this.context = context;
+        parseObjFile();
+    }
+
+    public Parse(Build builder, Context context, int resObj, int resMtl) throws IOException {
+        this.fromRes = true;
+        this.builder = builder;
+        this.resObj = context.getResources().openRawResource(resObj);
+        this.resMtl = context.getResources().openRawResource(resMtl);
         this.context = context;
         parseObjFile();
 
     }
 
+
     private void parseObjFile( ) throws FileNotFoundException, IOException {
         int lineCount = 0;
 
+        InputStream fis = null;
         String line = null;
-        String filename = "/AR/" + this.mModelName + "/" + this.mModelName + ".obj";
-        this.mModelName = "/AR/" + this.mModelName;
-        FileInputStream fis = null;
-        try {
-             File file = new File(Environment.getExternalStorageDirectory() + filename);
-             fis = new FileInputStream(file);
-        } catch ( Exception E)
-        {
-            int i = 0;
+        if(!fromRes) {
+
+            String filePath = this.mModelName + File.separator + this.mModelName + ".obj";
+//        this.mModelName = "/AR/" + this.mModelName;
+
+            File file = new File(dir, filePath);
+            fis = new FileInputStream(file);
         }
+        else {
+            fis = resObj;
+        }
+
+
         InputStreamReader isr = new InputStreamReader(fis);
         BufferedReader bufferedReader = new BufferedReader(isr);
         //mModelName
@@ -618,12 +648,12 @@ public class Parse {
 
         if (null != matlibnames) {
        //     for (int loopi = 0; loopi < matlibnames.length; loopi++) {
-                try {
+//                try {
                    // parseMtlFile(matlibnames[loopi]);
                     parseMtlFile(matlibnames);
-                } catch (FileNotFoundException e) {
-                   // log.log(SEVERE, "Can't find material file name='" + matlibnames[loopi] + "', e=" + e);
-                }
+//                } catch (FileNotFoundException e) {
+//                   // log.log(SEVERE, "Can't find material file name='" + matlibnames[loopi] + "', e=" + e);
+//                }
            // }
         }
     }
@@ -648,8 +678,14 @@ public class Parse {
         int lineCount = 0;
 
         //FileInputStream fis = context.openFileInput(this.mModelName + "/" + mtlFilename);
-        File file = new File(Environment.getExternalStorageDirectory() + this.mModelName + "/" + mtlFilename);
-        FileInputStream fis = new FileInputStream(file);
+        InputStream fis = null;
+        if(!fromRes) {
+            File file = new File(dir, this.mModelName + "/" + mtlFilename);
+            fis = new FileInputStream(file);
+        }
+        else {
+            fis = resMtl;
+        }
         InputStreamReader isr = new InputStreamReader(fis);
         BufferedReader bufferedReader = new BufferedReader(isr);
         String line = null;

@@ -3,12 +3,16 @@ package droidar2.sample;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 
+import com.droidar2.components.DistUpdateComp;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.GL1Renderer;
 import com.droidar2.gl.GLFactory;
-import com.droidar2.gl.scenegraph.CustomObj;
+import com.droidar2.gl.animations.AnimationFaceToCamera;
+import com.droidar2.gl.animations.AnimationFaceToObject;
+import com.droidar2.gl.animations.AnimationRotate;
+import com.droidar2.gl.animations.AnimationStickToCameraCenter;
+import com.droidar2.gl.scenegraph.Shape;
 import com.droidar2.gl.textures.TexturedShape;
 import com.droidar2.oobjloader.builder.Build;
 import com.droidar2.oobjloader.builder.Face;
@@ -32,141 +36,279 @@ public class GeoSetup extends DefaultARSetup {
 
     private double mLat, mLng;
     private String mModelName;
+    private File mDir;
 
     private Context context;
 
-    public GeoSetup(Context context, double mLat, double mLng, String modelName) {
+    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName) {
         this.mLat = mLat;
         this.mLng = mLng;
         this.context = context;
         this.mModelName = modelName;
+        this.mDir = dir;
 
-
-/*
-        try {
-            mModel = new MyObjModel(ObjModel.loadFromStream(context.getResources().openRawResource(R.raw.axis_die), "mat1_dice.jpg"), context);
-        } catch (java.io.IOException e) {
-            Log.v("DemoRendererView", "loading model: " + e);
-        }
-*/
 
     }
 
     @Override
     public void addObjectsTo(GL1Renderer renderer, World world,
                              GLFactory objectFactory) {
-//
-//    world.add(objectFactory.newTextObject("DroidAR", new Vec(10, 1, 1),
-//          getActivity(), camera));
 
-//    GeoObj o = GeoObj.rwthI9;
 
         GeoObj o = new GeoObj(mLat, mLng, 100);
-        o.setMaxVectorLength(1);
-
-        Obj textObj =objectFactory.newTextObject("Pick Up Point", o.getVirtualPosition(),
-                getActivity(), camera, o);
-
-
-//
-//		world.add(objectFactory.newSolarSystem(new Vec(-10, 1, 1), o));
-
-//    o.setComp(objectFactory.newTextObject("pp",new Vec(10,1,1),getActivity(),camera));
-//    world.add(o);
-//    o.refreshVirtualPosition();
+        o.setMaxVectorLength(60f);
+        o.setComp(new Shape());
 
 
         Build builder = new Build();
         Parse obj = null;
         try {
-            obj = new Parse(builder, this.context, this.mModelName);
-        } catch (Exception E){
-
+            obj = new Parse(builder, this.context, mDir, this.mModelName);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if( builder.groups.isEmpty()) {
-            CustomObj customObj = new CustomObj(builder);
+        if (builder.materialLib.isEmpty()) {
+            //		CustomObj customObj = new CustomObj(builder);
             //o.setComp(customObj);
-            o.getGraphicsComponent().addChild(customObj);
-        }
-        else {
+            //		o.getGraphicsComponent().addChild(customObj);
+        } else {
             Iterator it = builder.groups.entrySet().iterator();
             Iterator itMaterials = builder.materialLib.entrySet().iterator();
             boolean add = true;
-            HashMap<String, TexturedShape> Shapes = new HashMap<String, TexturedShape>();
+            HashMap<String, TexturedShape> TShapes = new HashMap<String, TexturedShape>();
+            HashMap<String, Shape> Shapes = new HashMap<String, Shape>();
             int index = 0;
+
 
             while (itMaterials.hasNext()) {
                 Map.Entry pair = (Map.Entry) itMaterials.next();
 
                 String key = (String) pair.getKey();
                 Material material = (Material) pair.getValue();
+                if (material.mapKdFilename != null) {
+                    String filename = this.mModelName + "/Texture/" + material.mapKdFilename;
+                    File file = new File(mDir, filename);
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+                    TexturedShape shape = new TexturedShape(material.name, bitmap);
+                    shape.setKa(material.ka.toFloat());
+                    shape.setKd(material.kd.toFloat());
+                    shape.setKs(material.ks.toFloat());
+                    shape.setD((float) material.dFactor);
+                    shape.setIllum((float) material.illumModel);
+                    shape.setNs((float) material.nsExponent);
+                    shape.setNi((float) material.niOpticalDensity);
+                    TShapes.put(material.name, shape);
+                    index++;
+                } else {
 
-                String filename = "/AR/" + this.mModelName + "/Texture/" + material.mapKdFilename;
-                File file = new File(Environment.getExternalStorageDirectory() + filename);
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-                TexturedShape shape = new TexturedShape( material.name, bitmap);
-                Shapes.put( material.name, shape);
-                index++;
+                    Shape shape = new Shape();
+                    shape.setKa(material.ka.toFloat());
+                    shape.setKd(material.kd.toFloat());
+                    shape.setKs(material.ks.toFloat());
+                    shape.setD((float) material.dFactor);
+                    shape.setIllum((float) material.illumModel);
+                    shape.setNs((float) material.nsExponent);
+                    shape.setNi((float) material.niOpticalDensity);
+                    Shapes.put(material.name, shape);
+                    index++;
+
+                }
+
             }
 
 
-            for( Face face: builder.faces){
-                if( face.material != null){
-                    TexturedShape shape = Shapes.get(face.material.name);
-                    for (FaceVertex vertex : face.vertices) {
-                        shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
-                                new Vec(vertex.n.x, vertex.n.y, vertex.n.z), vertex.t.u, vertex.t.v);
+            for (Face face : builder.faces) {
+                if (face.material != null) {
+                    if (!TShapes.isEmpty()) {
+                        TexturedShape shape = TShapes.get(face.material.name);
+                        if (shape != null)
+                            for (FaceVertex vertex : face.vertices) {
+                                shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                        new Vec(vertex.n.x, vertex.n.y, vertex.n.z), vertex.t.u, vertex.t.v);
+                            }
                     }
+                    if (!Shapes.isEmpty()) {
+                        Shape shape = Shapes.get(face.material.name);
+                        if (shape != null)
+                            for (FaceVertex vertex : face.vertices) {
+                                shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                        new Vec(vertex.n.x, vertex.n.y, vertex.n.z));
+                            }
+                    }
+
+                } else {
+                    int i = 0;
+                }
+            }
+
+            if (!TShapes.isEmpty()) {
+                Iterator itShapes = TShapes.entrySet().iterator();
+                while (itShapes.hasNext()) {
+                    Map.Entry pair = (Map.Entry) itShapes.next();
+                    String key = (String) pair.getKey();
+                    TexturedShape shape = (TexturedShape) pair.getValue();
+                    shape.updateRest();
+                    o.getGraphicsComponent().addChild(shape);
 
                 }
             }
 
-            Iterator itShapes = Shapes.entrySet().iterator();
-            while (itShapes.hasNext()) {
-                Map.Entry pair = (Map.Entry) itShapes.next();
+            if (!Shapes.isEmpty()) {
+                Iterator itShapes = Shapes.entrySet().iterator();
+                while (itShapes.hasNext()) {
+                    Map.Entry pair = (Map.Entry) itShapes.next();
+                    String key = (String) pair.getKey();
+                    Shape shape = (Shape) pair.getValue();
+                    shape.updateRest();
+                    o.getGraphicsComponent().addChild(shape);
+
+                }
+            }
+
+
+            o.refreshVirtualPosition();
+            o.getGraphicsComponent().addAnimation(new AnimationRotate(30, new Vec(0, 0, 1)));
+//            o.getGraphicsComponent().setRotation(new Vec(0,-90,0));
+//            o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
+            world.add(o);
+
+            world.add(newArrow(o));
+
+            world.add(newTextObject(o));
+
+        }
+    }
+
+
+    private Obj newArrow(Obj targetObj) {
+        final Obj obj = new Obj();
+//        MeshComponent diamond = GLFactory.getInstance().newCuror();
+//        obj.setComp(diamond);
+        obj.setComp(new Shape());
+        parseArrow(obj);
+        obj.getMeshComp().addAnimation(new AnimationFaceToObject(targetObj, false));
+        obj.getMeshComp().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f));
+        return obj;
+    }
+
+    private Obj newTextObject(GeoObj geoObj) {
+        Obj o = new Obj();
+        o.setComp(new Shape());
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj,0.5f));
+        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera));
+        o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
+        return o;
+    }
+
+
+    private void parseArrow(Obj o) {
+        Build builder = new Build();
+        Parse obj = null;
+        try {
+            obj = new Parse(builder, this.context, R.raw.arrow7_obj, R.raw.arrow7_mtl);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (builder.materialLib.isEmpty()) {
+
+        } else {
+            Iterator it = builder.groups.entrySet().iterator();
+            Iterator itMaterials = builder.materialLib.entrySet().iterator();
+            boolean add = true;
+            HashMap<String, TexturedShape> TShapes = new HashMap<String, TexturedShape>();
+            HashMap<String, Shape> Shapes = new HashMap<String, Shape>();
+            int index = 0;
+
+
+            while (itMaterials.hasNext()) {
+                Map.Entry pair = (Map.Entry) itMaterials.next();
 
                 String key = (String) pair.getKey();
-                TexturedShape shape = (TexturedShape) pair.getValue();
-                shape.updateRest();
-                o.getGraphicsComponent().addChild(shape);
+                Material material = (Material) pair.getValue();
+                if (material.mapKdFilename != null) {
+                    String filename = "arrow3" + "/Texture/" + material.mapKdFilename;
+                    File file = new File(mDir + filename);
+                    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+                    TexturedShape shape = new TexturedShape(material.name, bitmap);
+                    shape.setKa(material.ka.toFloat());
+                    shape.setKd(material.kd.toFloat());
+                    shape.setKs(material.ks.toFloat());
+                    shape.setD((float) material.dFactor);
+                    shape.setIllum((float) material.illumModel);
+                    shape.setNs((float) material.nsExponent);
+                    shape.setNi((float) material.niOpticalDensity);
+                    TShapes.put(material.name, shape);
+                    index++;
+                } else {
+
+                    Shape shape = new Shape();
+                    shape.setKa(material.ka.toFloat());
+                    shape.setKd(material.kd.toFloat());
+                    shape.setKs(material.ks.toFloat());
+                    shape.setD((float) material.dFactor);
+                    shape.setIllum((float) material.illumModel);
+                    shape.setNs((float) material.nsExponent);
+                    shape.setNi((float) material.niOpticalDensity);
+                    Shapes.put(material.name, shape);
+                    index++;
+
+                }
 
             }
 
 
-//			while (it.hasNext()) {
-//				if( !add )
-//					break;
-//				Map.Entry pair = (Map.Entry)it.next();
-//
-//				String key = (String)pair.getKey();
-//				ArrayList<Face> faces =  (ArrayList<Face>)pair.getValue();
-//
-//				for( Face face : faces) {
-//					String filename = "/Work/" + this.mModelName + "/Texture/" + face.material.mapKdFilename;
-//					try {
-//						File file = new File(Environment.getExternalStorageDirectory() + filename);
-//						BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//						Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-//						TexturedShape shape = new TexturedShape(face.material.mapKdFilename, bitmap);
-//						for (FaceVertex vertex : face.vertices) {
-//							shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z), vertex.t.u, vertex.t.v);
-//						}
-//						o.getGraphicsComponent().addChild(shape);
-//					} catch (Exception E){
-//						int i = 0;
-//					}
-//				}
-//
-//			}
+            for (Face face : builder.faces) {
+                if (face.material != null) {
+                    if (!TShapes.isEmpty()) {
+                        TexturedShape shape = TShapes.get(face.material.name);
+                        for (FaceVertex vertex : face.vertices) {
+                            shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                    new Vec(vertex.n.x, vertex.n.y, vertex.n.z), vertex.t.u, vertex.t.v);
+                        }
+                    }
+                    if (!Shapes.isEmpty()) {
+                        Shape shape = Shapes.get(face.material.name);
+                        for (FaceVertex vertex : face.vertices) {
+                            shape.add(new Vec(vertex.v.x, vertex.v.y, vertex.v.z),
+                                    new Vec(vertex.n.x, vertex.n.y, vertex.n.z));
+                        }
+                    }
+
+                } else {
+                    int i = 0;
+                }
+            }
+
+            if (!TShapes.isEmpty()) {
+                Iterator itShapes = TShapes.entrySet().iterator();
+                while (itShapes.hasNext()) {
+                    Map.Entry pair = (Map.Entry) itShapes.next();
+                    String key = (String) pair.getKey();
+                    TexturedShape shape = (TexturedShape) pair.getValue();
+                    shape.updateRest();
+                    o.getGraphicsComponent().addChild(shape);
+
+                }
+            }
+
+            if (!Shapes.isEmpty()) {
+                Iterator itShapes = Shapes.entrySet().iterator();
+                while (itShapes.hasNext()) {
+                    Map.Entry pair = (Map.Entry) itShapes.next();
+                    String key = (String) pair.getKey();
+                    Shape shape = (Shape) pair.getValue();
+                    shape.updateRest();
+                    o.getGraphicsComponent().addChild(shape);
+
+                }
+            }
+
         }
-
-
-        o.refreshVirtualPosition();
-        world.add(o);
-
     }
-
 
 }
