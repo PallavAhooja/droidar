@@ -112,10 +112,11 @@ public abstract class DefaultARSetup extends Setup {
             @Override
             public void onGroundParallel(boolean parallel) {
                 if (button != null && button.isChecked()) {
-                    if (parallel)
+                    if (parallel && cameraPreview)
                         pauseCameraPreview();
-                    else
+                    else if (!parallel && !cameraPreview)
                         resumeCameraPreview();
+                    cameraPreview = !cameraPreview;
                 }
             }
         });
