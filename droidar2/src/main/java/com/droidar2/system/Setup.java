@@ -327,7 +327,6 @@ public abstract class Setup {
 
 		debugLogDoSetupStep(STEP7);
 		myCameraView = initCameraView(myTargetActivity);
-
 	}
 
 	private void addOverlaysAndShowInfoScreen() {
@@ -842,6 +841,7 @@ public abstract class Setup {
 		if (myCameraView != null) {
 			Log.d(LOG_TAG, "Pausing camera preview " + myCameraView);
 			myCameraView.pause();
+			myCameraView.setVisibility(View.GONE);
 		}
 	}
 
@@ -849,6 +849,7 @@ public abstract class Setup {
 		if (myCameraView != null) {
 			Log.d(LOG_TAG, "Resuming camera preview " + myCameraView);
 			myCameraView.resumeCamera();
+			myCameraView.setVisibility(View.VISIBLE);
 		}
 	}
 

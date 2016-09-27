@@ -30,20 +30,26 @@ public class DistUpdateComp implements Entity {
     private String distanceText = "";
     private MeshComponent textMesh;
     private float textSize;
+    private double reachedDistance;
 
     private Vec camVec = new Vec();
 
 
     public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj) {
-        this(myCamera,updateSpeed,context,geoObj,1);
+        this(myCamera, updateSpeed, context, geoObj, 1, -1d);
     }
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj,float textSize) {
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize) {
+        this(myCamera, updateSpeed, context, geoObj, textSize, -1d);
+    }
+
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, double reachedDistance) {
         this.myCamera = myCamera;
         timer = new UpdateTimer(updateSpeed, null);
         this.context = context;
         this.geoObj = geoObj;
         this.textSize = textSize;
+        this.reachedDistance = reachedDistance;
     }
 
     @Override
@@ -62,13 +68,16 @@ public class DistUpdateComp implements Entity {
 
             Location currentLocation = ConcreteSimpleLocationManager.getInstance(context)
                     .getCurrentLocation();
-            if(currentLocation == null)
+            if (currentLocation == null)
                 return true;
 
             double distance = GeoUtils.distance(currentLocation.getLatitude(), geoObj.getLatitude()
                     , currentLocation.getLongitude(), geoObj.getLongitude(), 0, 0);
-
-            String distanceS = GeoUtils.getDistanceString(distance);
+            String distanceS;
+            if (reachedDistance != -1d && distance <= reachedDistance)
+                distanceS = "You have arrived";
+            else
+                distanceS = GeoUtils.getDistanceString(distance);
 
             if (!distanceText.equals(distanceS)) {
                 distanceText = distanceS;

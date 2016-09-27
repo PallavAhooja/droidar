@@ -101,13 +101,13 @@ public class GeoObj extends Obj implements HasDebugInformation {
      */
     private boolean isDeleted = false;
 
-    private float myMaxVectorLength = 0f;
+    private float maxVectorLength = -1f;
 
-    public void setMyMinVectorLength(float myMinVectorLength) {
-        this.myMinVectorLength = myMinVectorLength;
+    public void setMinVectorLength(float myMinVectorLength) {
+        this.minVectorLength = myMinVectorLength;
     }
 
-    private float myMinVectorLength = -1f;
+    private float minVectorLength = -1f;
 
     // Vec myPosition=new Vec();
 
@@ -398,7 +398,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
     }
 
     public void setMaxVectorLength(float max) {
-        this.myMaxVectorLength = max;
+        this.maxVectorLength = max;
     }
 
     /**
@@ -440,11 +440,11 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
         Log.i(LOG_TAG, "Original Position: " + position);
 
-        if (myMaxVectorLength != 0f && position.getLength() > myMaxVectorLength) {
-            position.setLength(myMaxVectorLength);
+        if (maxVectorLength != -1f && position.getLength() >= maxVectorLength) {
+            position.setLength(maxVectorLength);
         }
-        else if (myMinVectorLength!=-1f && position.getLength() < myMinVectorLength)
-            position.setLength(myMinVectorLength);
+        else if (minVectorLength !=-1f && position.getLength() < minVectorLength)
+            position.setLength(minVectorLength);
         Log.i(LOG_TAG, "Setting Position to: " + position);
 		/*
 		 * the altitude should be respected as well but altitude = 0 should by
