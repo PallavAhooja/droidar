@@ -260,7 +260,6 @@ public class GeoSetup extends DefaultARSetup {
         return o;
     }
 
-
     private void parseArrow(Obj o) {
         Build builder = new Build();
         Parse obj = null;

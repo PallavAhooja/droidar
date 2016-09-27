@@ -1,6 +1,7 @@
 package com.droidar2.system;
 
 import com.droidar2.R;
+import com.droidar2.actions.ActionGroundTilt;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.CustomGLSurfaceView;
 import com.droidar2.gl.GL1Renderer;
@@ -22,6 +23,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ToggleButton;
 
 import com.droidar2.commands.Command;
 
@@ -53,6 +55,7 @@ public abstract class DefaultARSetup extends Setup {
     private Action rotateGLCameraAction;
     private float minAccuracy = 24.0f;
     private boolean cameraPreview = true;
+    private ToggleButton button;
 
     public DefaultARSetup() {
 
@@ -99,6 +102,17 @@ public abstract class DefaultARSetup extends Setup {
 //		wasdAction = new ActionWASDMovement(camera, 25, 50, 20);
         rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
         eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
+        eventManager.addOnOrientationChangedAction(new ActionGroundTilt(this) {
+            @Override
+            public void onGroundParallel(boolean parallel) {
+                if (button != null && button.isChecked()) {
+                    if (parallel)
+                        pauseCameraPreview();
+                    else
+                        resumeCameraPreview();
+                }
+            }
+        });
 
 //		arView.addOnTouchMoveListener(wasdAction);
         // eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
@@ -167,7 +181,7 @@ public abstract class DefaultARSetup extends Setup {
     private View getCameraToggleView() {
         View viewContainer = View.inflate(getActivity(),
                 R.layout.camera_toggle, null);
-        Button button = (Button) viewContainer.findViewById(R.id.toggle);
+        button = (ToggleButton) viewContainer.findViewById(R.id.toggle);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +189,7 @@ public abstract class DefaultARSetup extends Setup {
                     pauseCameraPreview();
                 else
                     resumeCameraPreview();
-                cameraPreview =!cameraPreview;
+                cameraPreview = !cameraPreview;
             }
         });
 

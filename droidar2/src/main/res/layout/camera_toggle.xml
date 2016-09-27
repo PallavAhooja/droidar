@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
-        android:textOn="Camera"
-        android:textOff="Camera"/>
+        android:textOn="LIVE (AUTO)"
+        android:textOff="LIVE (OFF)"/>
 
 
 </LinearLayout>
