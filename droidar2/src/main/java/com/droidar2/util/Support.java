@@ -12,6 +12,13 @@ import android.location.LocationManager;
  * Created by pallavahooja on 22/08/16.
  */
 public class Support {
+    public static final int f_magne = 1;
+    public static final int f_accel = 2;
+    public static final int f_location = 4;
+    public static final int f_basic = 7;
+    public static final int f_rotation = 8;
+    public static final int f_all = 15;
+
     public static final float minGLESVerion = 0F;
 //    public static final float minGLESVerion = 131072.0F;
 
@@ -25,16 +32,24 @@ public class Support {
             SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             boolean magnetometer = sensorManager != null
                     && sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null;
+            if (magnetometer)
+                features |= f_magne;
             boolean accel = sensorManager != null
                     && sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null;
+            if (accel)
+                features |= f_accel;
             boolean rotation = sensorManager != null
                     && sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) != null;
+            if (rotation)
+                features |= f_rotation;
             boolean location = locationManager != null && locationManager.getAllProviders() != null
                     && locationManager.getAllProviders().size() > 0;
+            if (location)
+                features |= f_location;
 
-            if (location && magnetometer && accel && rotation ) {
-                features |= 1;
-            }
+//            if (location && magnetometer && accel && rotation ) {
+//                features |= 1;
+//            }
         }
 
         return features;
@@ -46,13 +61,12 @@ public class Support {
         return (float) info.reqGlEsVersion;
     }
 
-    public interface Features {
-        int GeoCompass = 1;
-
+    public static boolean supportsAR(Context context) {
+        return (getSupportedFeaturesForDevice(context) & f_basic) != 0;
     }
 
-    public static boolean supportsAR(Context context) {
-        return (getSupportedFeaturesForDevice(context) & Features.GeoCompass) != 0;
+    public static boolean hasRotVec(Context context) {
+        return (getSupportedFeaturesForDevice(context) & f_rotation) != 0;
     }
 
 

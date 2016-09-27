@@ -841,7 +841,7 @@ public abstract class Setup {
 		if (myCameraView != null) {
 			Log.d(LOG_TAG, "Pausing camera preview " + myCameraView);
 			myCameraView.pause();
-			myCameraView.setVisibility(View.GONE);
+			myCameraView.setVisibility(View.INVISIBLE);
 		}
 	}
 

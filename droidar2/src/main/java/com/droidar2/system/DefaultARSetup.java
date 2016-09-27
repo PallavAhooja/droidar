@@ -10,6 +10,7 @@ import com.droidar2.gl.GLCamera;
 import com.droidar2.gl.GLFactory;
 import com.droidar2.gui.GuiSetup;
 import com.droidar2.util.Log;
+import com.droidar2.util.Support;
 import com.droidar2.util.Vec;
 import com.droidar2.worldData.SystemUpdater;
 import com.droidar2.worldData.World;
@@ -101,7 +102,11 @@ public abstract class DefaultARSetup extends Setup {
     public void _c_addActionsToEvents(final EventManager eventManager,
                                       CustomGLSurfaceView arView, SystemUpdater updater) {
 //		wasdAction = new ActionWASDMovement(camera, 25, 50, 20);
-        rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
+
+        if (Support.hasRotVec(getActivity()))
+            rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
+        else
+            rotateGLCameraAction = new ActionRotateCameraWithoutGyro(camera);
         eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
         eventManager.addOnOrientationChangedAction(new ActionGroundTilt(this) {
             @Override
