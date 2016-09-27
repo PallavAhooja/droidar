@@ -2,6 +2,7 @@ package com.droidar2.system;
 
 import com.droidar2.R;
 import com.droidar2.actions.ActionGroundTilt;
+import com.droidar2.actions.ActionRotateCameraWithoutGyro;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.CustomGLSurfaceView;
 import com.droidar2.gl.GL1Renderer;
@@ -113,6 +114,7 @@ public abstract class DefaultARSetup extends Setup {
                 }
             }
         });
+
 
 //		arView.addOnTouchMoveListener(wasdAction);
         // eventManager.addOnOrientationChangedAction(rotateGLCameraAction);

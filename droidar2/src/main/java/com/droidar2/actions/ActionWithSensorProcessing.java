@@ -29,13 +29,15 @@ public abstract class ActionWithSensorProcessing extends Action {
 	private float[] myOrientValues = new float[3];
 
 	private boolean accelChanged;
-	private float[] myNewAccelValues;
+	public float[] myNewAccelValues;
 	private boolean magnetoChanged;
-	private float[] myNewMagnetValues;
+	public float[] myNewMagnetValues;
 	private boolean orientationDataChanged;
 	private float[] myNewOrientValues;
+	private boolean rotationMatrixChanged;
+	private float[] myNewRotationMatrix;
 
-	private final float[] unrotatedMatrix = Calculus.createIdentityMatrix();
+	private float[] unrotatedMatrix = Calculus.createIdentityMatrix();
 	private float[] rotationMatrix = Calculus.createIdentityMatrix();
 
 	private final int screenRotation;
@@ -93,8 +95,15 @@ public abstract class ActionWithSensorProcessing extends Action {
 	}
 
 	@Override
+	public boolean onRotationMatrixChanged(float[] values) {
+		rotationMatrixChanged = true;
+		myNewRotationMatrix = values;
+		return true;
+	}
+
+	@Override
 	public synchronized boolean update(float timeDelta, Updateable parent) {
-		if (magnetoChanged || accelChanged || orientationDataChanged) {
+		if (magnetoChanged || accelChanged || orientationDataChanged || rotationMatrixChanged) {
 			if (magnetoChanged || accelChanged) {
 				// if accel or magnet changed:
 				if (accelChanged) {
@@ -128,6 +137,9 @@ public abstract class ActionWithSensorProcessing extends Action {
 				}
 				GLUtilityClass.getRotationMatrixFromVector(unrotatedMatrix,
 						myOrientValues);
+			} else if (rotationMatrixChanged) {
+				rotationMatrixChanged = false;
+				unrotatedMatrix = myNewRotationMatrix;
 			}
 
 			/*
