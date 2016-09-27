@@ -49,9 +49,14 @@ public abstract class DefaultARSetup extends Setup {
 	private boolean addObjCalledOneTieme;
 	private ActionWaitForAccuracy minAccuracyAction;
 	private Action rotateGLCameraAction;
+	private float minAccuracy = 24.0f;
 
 	public DefaultARSetup() {
 
+	}
+
+	public DefaultARSetup(float minAccuracy) {
+		this.minAccuracy = minAccuracy;
 	}
 
 	@Override
@@ -98,7 +103,7 @@ public abstract class DefaultARSetup extends Setup {
 				5, 25));
 		eventManager.addOnLocationChangedAction(new ActionCalcRelativePos(
 				world, camera));
-		minAccuracyAction = new ActionWaitForAccuracy(getActivity(), 24.0f, 10) {
+		minAccuracyAction = new ActionWaitForAccuracy(getActivity(), minAccuracy, 10) {
 			@Override
 			public void minAccuracyReachedFirstTime(Location l,
 					ActionWaitForAccuracy a) {

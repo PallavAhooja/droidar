@@ -40,26 +40,22 @@ public class GeoSetup extends DefaultARSetup {
 
     private Context context;
 
-    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName) {
+    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName, float minAccuracy) {
+        super(minAccuracy);
         this.mLat = mLat;
         this.mLng = mLng;
         this.context = context;
         this.mModelName = modelName;
         this.mDir = dir;
-
-
     }
 
     @Override
     public void addObjectsTo(GL1Renderer renderer, World world,
                              GLFactory objectFactory) {
-
-
         GeoObj o = new GeoObj(mLat, mLng, 0);
         o.setMaxVectorLength(100f);
         o.setMyMinVectorLength(10f);
         o.setComp(new Shape());
-
 
         Build builder = new Build();
         Parse obj = null;
