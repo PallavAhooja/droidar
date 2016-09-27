@@ -39,22 +39,32 @@ public class GeoSetup extends DefaultARSetup {
     private File mDir;
 
     private Context context;
+    private float constantVectorLength = -1f;
 
-    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName, float minAccuracy) {
+    public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName,
+                    float minAccuracy, float constantVectorLength) {
         super(minAccuracy);
         this.mLat = mLat;
         this.mLng = mLng;
         this.context = context;
         this.mModelName = modelName;
         this.mDir = dir;
+        this.constantVectorLength = constantVectorLength;
     }
 
     @Override
     public void addObjectsTo(GL1Renderer renderer, World world,
                              GLFactory objectFactory) {
         GeoObj o = new GeoObj(mLat, mLng, 0);
-        o.setMaxVectorLength(100f);
-        o.setMyMinVectorLength(10f);
+
+        if (constantVectorLength == -1f) {
+            o.setMaxVectorLength(100f);
+            o.setMyMinVectorLength(10f);
+        } else {
+            o.setMaxVectorLength(constantVectorLength);
+            o.setMyMinVectorLength(constantVectorLength);
+        }
+
         o.setComp(new Shape());
 
         Build builder = new Build();
@@ -193,8 +203,8 @@ public class GeoSetup extends DefaultARSetup {
     private Obj newTextObject(GeoObj geoObj) {
         Obj o = new Obj();
         o.setComp(new Shape());
-        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj,0.5f));
-        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera,0.5f,false));
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f));
+        o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera, 0.5f, false));
         o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
     }

@@ -18,9 +18,9 @@ public abstract class ActionWaitForAccuracy extends Action {
 
 	private static final String TEXT_DIALOG_TITLE = "Do you want to cancel the accuracy detection?";
 
-	private static final String TEXT_POSITION_ACCURACY = "Position Accuracy ";
+	private static final String TEXT_POSITION_ACCURACY = "Waiting for GPS,Accuracy ";
 
-	private static final String TEXT_SKIP_ACCURACY_DETECTION = "Skip accuracy detection (not recomended!)";
+	private static final String TEXT_SKIP_ACCURACY_DETECTION = "Skip accuracy detection (not recommended!)";
 
 	// 1 minutes in ms:
 	private static final long MAX_TIME_SINCE_LAST_UPDATE_IN_MS = 1000 * 60 * 1;
