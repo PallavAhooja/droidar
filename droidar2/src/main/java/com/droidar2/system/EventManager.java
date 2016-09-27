@@ -119,6 +119,9 @@ public class EventManager implements LocationListener, SensorEventListener {
 					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 			sensorManager.registerListener(this, accelSensor,
 					SensorManager.SENSOR_DELAY_GAME);
+			Sensor orientationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);// Sensor.TYPE_ROTATION_VECTOR);
+			sensorManager.registerListener(this, orientationSensor,
+					SensorManager.SENSOR_DELAY_GAME);
 		} else {
 			// Register orientation Sensor Listener:
 			Sensor orientationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);// Sensor.TYPE_ROTATION_VECTOR);
