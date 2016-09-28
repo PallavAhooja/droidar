@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.droidar2.geo.GeoObj;
 import com.droidar2.geo.GeoUtils;
+import com.droidar2.gl.Color;
 import com.droidar2.gl.GLCamera;
 import com.droidar2.gl.GLFactory;
 import com.droidar2.gl.scenegraph.MeshComponent;
@@ -107,6 +108,7 @@ public class DistUpdateComp implements Entity {
         TextView v = new TextView(context);
         v.setTypeface(null, Typeface.BOLD);
         // Set textcolor to black:
+        v.setTextColor(Color.white().toIntARGB());
         // v.setTextColor(new Color(0, 0, 0, 1).toIntARGB());
         v.setText(text);
 
