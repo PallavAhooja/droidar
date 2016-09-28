@@ -37,11 +37,14 @@ public abstract class ActionGroundTilt extends Action {
             onGroundParallel(false);
         }
 
-        return true;
+        return false;
 
     }
 
     public abstract void onGroundParallel(boolean parallel);
 
-
+    @Override
+    public boolean onOrientationChanged(float[] values) {
+        return true;
+    }
 }

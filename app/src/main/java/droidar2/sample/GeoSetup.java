@@ -79,8 +79,7 @@ public class GeoSetup extends DefaultARSetup {
             geoObj.setMaxVectorLength(100f);
             geoObj.setMinVectorLength(10f);
         } else {
-            geoObj.setMaxVectorLength(constantVectorLength);
-            geoObj.setMinVectorLength(constantVectorLength);
+            geoObj.setConstVectorLength(constantVectorLength);
         }
 
         geoObj.setComp(new Shape());

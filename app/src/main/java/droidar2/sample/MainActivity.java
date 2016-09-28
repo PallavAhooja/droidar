@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 
         ArActivity.startWithSetup(MainActivity.this,
                 new GeoSetup(MainActivity.this, 28.410297, 77.047490,
-                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "shuttl",MIN_ACCURACY,200f,200d));
+                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "shuttl",MIN_ACCURACY,300f,30d));
 
 //        ArActivity.startWithSetup(MainActivity.this, new TestSetup());
 

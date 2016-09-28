@@ -109,6 +109,12 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
     private float minVectorLength = -1f;
 
+    private float constVectorLength = -1f;
+
+    public void setConstVectorLength(float constVectorLength) {
+        this.constVectorLength = constVectorLength;
+    }
+
     // Vec myPosition=new Vec();
 
     /**
@@ -198,7 +204,7 @@ public class GeoObj extends Obj implements HasDebugInformation {
             g.addChild((MeshComponent) comp);
             setMyGraphicsComponent(g);
             /*
-			 * if the surround-group was not jet added to the GeoObj it will be
+             * if the surround-group was not jet added to the GeoObj it will be
 			 * added now:
 			 */
             if (getMyComponents().contains(g) == -1) {
@@ -413,8 +419,8 @@ public class GeoObj extends Obj implements HasDebugInformation {
      */
     public Vec getVirtualPosition(double zeroLatitude, double zeroLongitude,
                                   double zeroAltitude) {
-		/*
-		 * The longitude calculation depends on current latitude: The
+        /*
+         * The longitude calculation depends on current latitude: The
 		 * circumference of a circle at a given latitude is proportional to the
 		 * cosine, so the formula is:
 		 * 
@@ -440,13 +446,17 @@ public class GeoObj extends Obj implements HasDebugInformation {
 
         Log.i(LOG_TAG, "Original Position: " + position);
 
-        if (maxVectorLength != -1f && position.getLength() >= maxVectorLength) {
-            position.setLength(maxVectorLength);
+        if (constVectorLength != -1f && position.getLength() != constVectorLength) {
+            position.setLength(constVectorLength);
+        } else {
+            if (maxVectorLength != -1f && position.getLength() >= maxVectorLength) {
+                position.setLength(maxVectorLength);
+            } else if (minVectorLength != -1f && position.getLength() < minVectorLength)
+                position.setLength(minVectorLength);
         }
-        else if (minVectorLength !=-1f && position.getLength() < minVectorLength)
-            position.setLength(minVectorLength);
+
         Log.i(LOG_TAG, "Setting Position to: " + position);
-		/*
+        /*
 		 * the altitude should be respected as well but altitude = 0 should by
 		 * default mean the current device altitude is used:
 		 */

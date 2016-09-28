@@ -112,11 +112,13 @@ public abstract class DefaultARSetup extends Setup {
             @Override
             public void onGroundParallel(boolean parallel) {
                 if (button != null && button.isChecked()) {
-                    if (parallel && cameraPreview)
+                    if (parallel && cameraPreview) {
                         pauseCameraPreview();
-                    else if (!parallel && !cameraPreview)
+                        cameraPreview = !cameraPreview;
+                    } else if (!parallel && !cameraPreview) {
                         resumeCameraPreview();
-                    cameraPreview = !cameraPreview;
+                        cameraPreview = !cameraPreview;
+                    }
                 }
             }
         });
@@ -193,11 +195,13 @@ public abstract class DefaultARSetup extends Setup {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cameraPreview)
+                if(!button.isChecked()) {
                     pauseCameraPreview();
-                else
-                    resumeCameraPreview();
-                cameraPreview = !cameraPreview;
+                    cameraPreview = !cameraPreview;
+                }
+                else {
+
+                }
             }
         });
 
