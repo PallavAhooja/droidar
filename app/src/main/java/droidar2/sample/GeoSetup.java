@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Handler;
 
 import com.droidar2.actions.ActionReachDestination;
 import com.droidar2.components.DistUpdateComp;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by pallavahooja on 22/08/16.
@@ -57,7 +59,7 @@ public class GeoSetup extends DefaultARSetup {
     private List<Obj> addObjects;
 
     public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName,
-                    float minAccuracy, float constantVectorLength ,double reachDistance) {
+                    float minAccuracy, float constantVectorLength, double reachDistance) {
         super(minAccuracy);
         this.mLat = mLat;
         this.mLng = mLng;
@@ -212,7 +214,7 @@ public class GeoSetup extends DefaultARSetup {
         eventManager.addOnLocationChangedAction(new ActionReachDestination(reachDistance) {
             @Override
             public boolean onLocationChanged(Location location) {
-                return checkDestination(geoObj,location);
+                return checkDestination(geoObj, location);
                 //to handle race condition
             }
 
@@ -223,6 +225,15 @@ public class GeoSetup extends DefaultARSetup {
                     world.remove(removableObject);
                 }
                 removeObjects.clear();
+
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (getActivity() != null)
+                            getActivity().finish();
+                    }
+                }, TimeUnit.SECONDS.toMillis(5));
             }
 
             @Override
@@ -253,7 +264,7 @@ public class GeoSetup extends DefaultARSetup {
     private Obj newTextObject(GeoObj geoObj) {
         Obj o = new Obj();
         o.setComp(new Shape());
-        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f,reachDistance));
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f, reachDistance));
         o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera, 0.5f, false));
         o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
