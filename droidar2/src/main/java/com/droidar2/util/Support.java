@@ -15,9 +15,9 @@ public class Support {
     public static final int f_magne = 1;
     public static final int f_accel = 2;
     public static final int f_location = 4;
-    public static final int f_basic = 7;
+    public static final int f_basic = f_magne | f_accel | f_location;
     public static final int f_rotation = 8;
-    public static final int f_all = 15;
+    public static final int f_all = f_rotation | f_basic;
 
     public static final float minGLESVerion = 0F;
 //    public static final float minGLESVerion = 131072.0F;
@@ -62,11 +62,15 @@ public class Support {
     }
 
     public static boolean supportsAR(Context context) {
-        return (getSupportedFeaturesForDevice(context) & f_basic) != 0;
+        return isFlagSet(getSupportedFeaturesForDevice(context),f_basic);
     }
 
     public static boolean hasRotVec(Context context) {
-        return (getSupportedFeaturesForDevice(context) & f_rotation) != 0;
+        return isFlagSet(getSupportedFeaturesForDevice(context),f_rotation);
+    }
+
+    public static boolean isFlagSet(int flags, int mask) {
+        return ((flags & mask) == mask);
     }
 
 
