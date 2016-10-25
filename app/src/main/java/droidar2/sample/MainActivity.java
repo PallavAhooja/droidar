@@ -14,7 +14,7 @@ import droidar2.sample.setups.TestSetup;
 
 public class MainActivity extends Activity {
 
-    public static final float MIN_ACCURACY = 100f;
+    public static final float MIN_ACCURACY = 50f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 
         ArActivity.startWithSetup(MainActivity.this,
                 new GeoSetup(MainActivity.this, 28.410297, 77.047490,
-                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "shuttl",MIN_ACCURACY,300f,30d));
+                        new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "shuttl", MIN_ACCURACY, 20f, 300f, 30d));
 
 //        ArActivity.startWithSetup(MainActivity.this, new TestSetup());
 

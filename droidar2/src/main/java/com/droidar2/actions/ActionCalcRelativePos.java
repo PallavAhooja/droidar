@@ -25,25 +25,22 @@ import android.location.Location;
 public class ActionCalcRelativePos extends Action {
 
 	/**
-	 * On default this is false, because the altitude values received via GPS
-	 * are very inaccurate
-	 * 
-	 * set this to true if your scenario need to take altitude values into
-	 * account
-	 */
-	public static boolean USE_ALTITUDE_VALUES = false;
-	/**
 	 * set this to false if you want to position objects at the real 0 altitude,
 	 * because otherwise if you set altitude to 0 the current device altitude
 	 * will be used
 	 */
 	public static final boolean USE_DEVICE_ALTI_FOR_ZERO = true;
-
-	private static final double MAX_METER_DISTANCE = 10000; // 500 meter
+	private static final double MAX_METER_DISTANCE = 100; // 500 meter
 	private static final String LOG_TAG = "ActionCalcRelativePos";
-
 	private static final boolean LOG_SHOW_POSITION = true;
-
+	/**
+	 * On default this is false, because the altitude values received via GPS
+	 * are very inaccurate
+	 * <p>
+	 * set this to true if your scenario need to take altitude values into
+	 * account
+	 */
+	public static boolean USE_ALTITUDE_VALUES = false;
 	/**
 	 * this could be replaces by the
 	 * {@link EventManager#getZeroPositionLocationObject()} values. Should store

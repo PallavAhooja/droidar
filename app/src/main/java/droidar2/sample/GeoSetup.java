@@ -48,7 +48,8 @@ public class GeoSetup extends DefaultARSetup {
     private File mDir;
 
     private Context context;
-    private float constantVectorLength = -1f;
+    private float minVectorLength = -1f;
+    private float maxVectorLength = -1f;
 
     private double reachDistance = -1d;
 
@@ -59,14 +60,15 @@ public class GeoSetup extends DefaultARSetup {
     private List<Obj> addObjects;
 
     public GeoSetup(Context context, double mLat, double mLng, File dir, String modelName,
-                    float minAccuracy, float constantVectorLength, double reachDistance) {
+                    float minAccuracy, float minVectorLength, float maxVectorLength, double reachDistance) {
         super(minAccuracy);
         this.mLat = mLat;
         this.mLng = mLng;
         this.context = context;
         this.mModelName = modelName;
         this.mDir = dir;
-        this.constantVectorLength = constantVectorLength;
+        this.minVectorLength = minVectorLength;
+        this.maxVectorLength = maxVectorLength;
         this.reachDistance = reachDistance;
         removeObjects = new ArrayList<>();
         addObjects = new ArrayList<>();
@@ -77,11 +79,11 @@ public class GeoSetup extends DefaultARSetup {
                              GLFactory objectFactory) {
         geoObj = new GeoObj(mLat, mLng, 0);
 
-        if (constantVectorLength == -1f) {
-            geoObj.setMaxVectorLength(100f);
-            geoObj.setMinVectorLength(10f);
-        } else {
-            geoObj.setConstVectorLength(constantVectorLength);
+        if (minVectorLength == -1f) {
+            geoObj.setMinVectorLength(minVectorLength);
+        }
+        if (maxVectorLength == -1f) {
+            geoObj.setMaxVectorLength(maxVectorLength);
         }
 
         geoObj.setComp(new Shape());
