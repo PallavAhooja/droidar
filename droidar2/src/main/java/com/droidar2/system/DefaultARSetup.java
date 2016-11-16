@@ -2,6 +2,7 @@ package com.droidar2.system;
 
 import com.droidar2.R;
 import com.droidar2.actions.ActionGroundTilt;
+import com.droidar2.actions.ActionOrientationChange;
 import com.droidar2.actions.ActionRotateCameraWithoutGyro;
 import com.droidar2.geo.GeoObj;
 import com.droidar2.gl.CustomGLSurfaceView;
@@ -120,6 +121,29 @@ public abstract class DefaultARSetup extends Setup {
                         cameraPreview = !cameraPreview;
                     }
                 }
+            }
+        });
+
+        eventManager.addOnOrientationChangedAction(new ActionOrientationChange() {
+
+            @Override
+            public void onOrientChange(ScreenOrientation orientation) {
+                switch (orientation) {
+                    case PORTRAIT:
+                        button.setRotation(270);
+                        break;
+                    case LANDSCAPE:
+                        button.setRotation(0);
+                        break;
+                    case REVERSED_PORTRAIT:
+                        button.setRotation(90);
+                        break;
+                    case REVERSED_LANDSCAPE:
+                        button.setRotation(180);
+                        break;
+                }
+
+                android.util.Log.e(TAG, orientation.name());
             }
         });
 

@@ -1,7 +1,6 @@
 package com.droidar2.actions;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Display;
 
 
@@ -17,21 +16,18 @@ public abstract class ActionOrientationChange extends Action {
     private static final int _DATA_Z = 2;
     public ScreenOrientation screenOrientation;
     int orientation = -1;
-    private Context context;
-    private Display display;
     private int mOrientation = ORIENTATION_UNKNOWN;
 
-    public ActionOrientationChange(Context context) {
-        this.context = context;
+    public ActionOrientationChange() {
     }
 
     @Override
     public boolean onAccelChanged(float[] values) {
 
-//        int rotation = display.getRotation();
 //        Log.d(TAG,"rotation = " + rotation);
 //        Log.d(TAG, "values = " + values[0] + " - " + values[1] + " - " + values[2]);
 
+        //from AOSP
         int orientation = ORIENTATION_UNKNOWN;
         float X = -values[_DATA_X];
         float Y = -values[_DATA_Y];
@@ -41,7 +37,7 @@ public abstract class ActionOrientationChange extends Action {
         if (magnitude * 4 >= Z * Z) {
             float OneEightyOverPi = 57.29577957855f;
             float angle = (float) Math.atan2(-Y, X) * OneEightyOverPi;
-            orientation = 90 - (int) Math.round(angle);
+            orientation = 90 - Math.round(angle);
             // normalize to 0 - 359 range
             while (orientation >= 360) {
                 orientation -= 360;
@@ -55,19 +51,6 @@ public abstract class ActionOrientationChange extends Action {
             onOrientationAngleChanged(orientation);
         }
 
-//        if (values[0] < .65 && values[0] > -.65) {
-//            if (orientation != 1) {
-//                Log.d(TAG, "Landscape");
-//                onLandscape(true);
-//            }
-//            orientation = 1;
-//        } else {
-//            if (orientation != 0) {
-//                Log.d(TAG, "Portrait");
-//                onLandscape(false);
-//            }
-//            orientation = 0;
-//        }
         return false;
     }
 

@@ -43,7 +43,7 @@
 
         <activity
             android:name="com.droidar2.system.ArActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="landscape"></activity>
 

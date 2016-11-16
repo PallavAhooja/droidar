@@ -41,7 +41,8 @@ import android.widget.TextView;
 public class GLFactory {
 
 	private static final String LOG_TAG = "GLFactory";
-
+	private static final float HEIGHT_TO_SIDE_FACTOR = (float) (2f / Math
+			.sqrt(3f));
 	private static GLFactory myInstance = new GLFactory();
 
 	private GLFactory() {
@@ -49,6 +50,10 @@ public class GLFactory {
 
 	public static GLFactory getInstance() {
 		return myInstance;
+	}
+
+	public static void resetInstance() {
+		myInstance = new GLFactory();
 	}
 
 	public Shape newSquare(Color canBeNull) {
@@ -116,7 +121,7 @@ public class GLFactory {
 
 	/**
 	 * see {@link GLFactory#newTexturedSquare(String, Bitmap, float)}
-	 * 
+	 *
 	 * @param bitmapName
 	 * @param bitmap
 	 * @return A 1 x 1 meter square
@@ -127,7 +132,7 @@ public class GLFactory {
 
 	/**
 	 * see {@link GLFactory#newTexturedSquare(String, Bitmap, float)}
-	 * 
+	 *
 	 * @param context
 	 * @param iconId
 	 *            The id of the icon that should be used as the texture (will
@@ -145,7 +150,7 @@ public class GLFactory {
 	 * Please read
 	 * {@link TextureManager#addTexture(TexturedRenderData, Bitmap, String)} for
 	 * information about the parameters.
-	 * 
+	 *
 	 * @param bitmapName
 	 *            see
 	 *            {@link TextureManager#addTexture(TexturedRenderData, Bitmap, String)}
@@ -526,9 +531,6 @@ public class GLFactory {
 		return s;
 	}
 
-	private static final float HEIGHT_TO_SIDE_FACTOR = (float) (2f / Math
-			.sqrt(3f));
-
 	public Shape newPyramid(Vec center, float height, Color color) {
 		Shape p = new Shape(color);
 		// side length:
@@ -558,10 +560,6 @@ public class GLFactory {
 		p.add(p4);
 
 		return p;
-	}
-
-	public static void resetInstance() {
-		myInstance = new GLFactory();
 	}
 
 	public MeshComponent newCube() {
@@ -601,7 +599,7 @@ public class GLFactory {
 		float textSize = 1;
 
 		TextView v = new TextView(context);
-		v.setTypeface(null, Typeface.BOLD);
+		v.setTypeface(null, Typeface.NORMAL);
 		// Set textcolor to black:
 		// v.setTextColor(new Color(0, 0, 0, 1).toIntARGB());
 		v.setText(textToDisplay);
