@@ -10,6 +10,7 @@ import com.droidar2.geo.GeoUtils;
 import com.droidar2.gl.Color;
 import com.droidar2.gl.GLCamera;
 import com.droidar2.gl.GLFactory;
+import com.droidar2.gl.GLText;
 import com.droidar2.gl.scenegraph.MeshComponent;
 import com.droidar2.system.ConcreteSimpleLocationManager;
 import com.droidar2.util.Vec;
@@ -19,11 +20,14 @@ import com.droidar2.worldData.UpdateTimer;
 import com.droidar2.worldData.Updateable;
 import com.droidar2.worldData.Visitor;
 
+import java.util.HashMap;
+
 /**
  * Created by pallavahooja on 31/08/16.
  */
 public class DistUpdateComp implements Entity {
 
+    HashMap<String, MeshComponent> textMap = new HashMap<String, MeshComponent>();
     private GLCamera myCamera;
     private UpdateTimer timer;
     private Context context;
@@ -32,25 +36,32 @@ public class DistUpdateComp implements Entity {
     private MeshComponent textMesh;
     private float textSize;
     private double reachedDistance;
-
     private Vec camVec = new Vec();
+    private GLText text;
 
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj) {
-        this(myCamera, updateSpeed, context, geoObj, 1, -1d);
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, Obj obj) {
+        this(myCamera, updateSpeed, context, geoObj, 1, -1d, obj);
     }
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize) {
-        this(myCamera, updateSpeed, context, geoObj, textSize, -1d);
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, Obj obj) {
+        this(myCamera, updateSpeed, context, geoObj, textSize, -1d, obj);
     }
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, double reachedDistance) {
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, double reachedDistance, Obj obj) {
         this.myCamera = myCamera;
         timer = new UpdateTimer(updateSpeed, null);
         this.context = context;
         this.geoObj = geoObj;
         this.textSize = textSize;
         this.reachedDistance = reachedDistance;
+        this.text = new GLText("", context, textMap,
+                myCamera);
+
+        MeshComponent mc = obj.getGraphicsComponent();
+        if (mc != null) {
+            mc.addChild(text);
+        }
     }
 
     @Override
@@ -83,13 +94,7 @@ public class DistUpdateComp implements Entity {
             if (!distanceText.equals(distanceS)) {
                 distanceText = distanceS;
                 if (parent instanceof Obj) {
-                    MeshComponent mc = ((Obj) parent).getGraphicsComponent();
-                    if (mc != null) {
-                        if (textMesh != null)
-                            mc.remove(textMesh);
-                        textMesh = getText(distanceS);
-                        mc.addChild(textMesh);
-                    }
+                    text.changeTextTo(distanceS);
                 }
             }
         }
@@ -117,5 +122,7 @@ public class DistUpdateComp implements Entity {
 
         return mesh;
     }
+
+
 }
 

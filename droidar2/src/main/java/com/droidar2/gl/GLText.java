@@ -32,10 +32,10 @@ public class GLText extends MeshComponent {
 	private static final float CHAR_DIST = 0.5f;
 	private static final float CHAR_SIZE = 1f;
 	private static final String LOG_TAG = "GLText";
+	private final HashMap<String, MeshComponent> myTextMap;
 	private String myText;
 	private boolean textLoaded;
 	private Context myContext;
-	private final HashMap<String, MeshComponent> myTextMap;
 	private GLCamera myCamera;
 
 	/**
@@ -79,7 +79,7 @@ public class GLText extends MeshComponent {
 			MeshComponent m = loadCharMesh("" + text.charAt(i), i, textLength);
 			this.addChild(m);
 		}
-		this.addAnimation(new AnimationFaceToCamera(myCamera));
+//		this.addAnimation(new AnimationFaceToCamera(myCamera, 0.5f, false));
 
 	}
 
