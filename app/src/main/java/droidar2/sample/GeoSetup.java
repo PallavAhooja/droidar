@@ -79,10 +79,10 @@ public class GeoSetup extends DefaultARSetup {
                              GLFactory objectFactory) {
         geoObj = new GeoObj(mLat, mLng, 0);
 
-        if (minVectorLength == -1f) {
+        if (minVectorLength != -1f) {
             geoObj.setMinVectorLength(minVectorLength);
         }
-        if (maxVectorLength == -1f) {
+        if (maxVectorLength != -1f) {
             geoObj.setMaxVectorLength(maxVectorLength);
         }
 
@@ -266,7 +266,7 @@ public class GeoSetup extends DefaultARSetup {
     private Obj newTextObject(GeoObj geoObj) {
         Obj o = new Obj();
         o.setComp(new Shape());
-        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f, reachDistance));
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f, reachDistance, o));
         o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera, 0.5f, false));
         o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
