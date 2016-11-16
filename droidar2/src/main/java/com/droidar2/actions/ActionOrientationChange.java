@@ -27,7 +27,6 @@ public abstract class ActionOrientationChange extends Action {
 //        Log.d(TAG,"rotation = " + rotation);
 //        Log.d(TAG, "values = " + values[0] + " - " + values[1] + " - " + values[2]);
 
-        //from AOSP
         int orientation = ORIENTATION_UNKNOWN;
         float X = -values[_DATA_X];
         float Y = -values[_DATA_Y];
