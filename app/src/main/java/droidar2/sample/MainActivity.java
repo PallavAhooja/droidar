@@ -14,7 +14,7 @@ import droidar2.sample.setups.TestSetup;
 
 public class MainActivity extends Activity {
 
-    public static final float MIN_ACCURACY = 50f;
+    public static final float MIN_ACCURACY = 30f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         Toast.makeText(this, Support.supportsAR(this) + "-", Toast.LENGTH_SHORT).show();
 
         ArActivity.startWithSetup(MainActivity.this,
-                new GeoSetup(MainActivity.this, 28.410297, 77.047490,
+                new GeoSetup(MainActivity.this, 28.411825, 77.041894,
                         new File(Environment.getExternalStorageDirectory(), "ar" + File.separator), "shuttl", MIN_ACCURACY, 500f, 500f, 30d));
 
 //        ArActivity.startWithSetup(MainActivity.this, new TestSetup());

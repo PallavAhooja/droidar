@@ -50,6 +50,7 @@ public class GeoSetup extends DefaultARSetup {
     private Context context;
     private float minVectorLength = -1f;
     private float maxVectorLength = -1f;
+    private float minAccuracy;
 
     private double reachDistance = -1d;
 
@@ -70,6 +71,7 @@ public class GeoSetup extends DefaultARSetup {
         this.minVectorLength = minVectorLength;
         this.maxVectorLength = maxVectorLength;
         this.reachDistance = reachDistance;
+        this.minAccuracy = minAccuracy;
         removeObjects = new ArrayList<>();
         addObjects = new ArrayList<>();
     }
@@ -214,19 +216,18 @@ public class GeoSetup extends DefaultARSetup {
         super._c_addActionsToEvents(eventManager, arView, updater);
 
         eventManager.addOnLocationChangedAction(new ActionReachDestination(reachDistance) {
+            private boolean objectsAdded = true;
+
             @Override
             public boolean onLocationChanged(Location location) {
+                accuracyChange(location.getAccuracy() > minAccuracy);
                 return checkDestination(geoObj, location);
                 //to handle race condition
             }
 
             @Override
             public void reachDestination() {
-                addObjects.addAll(removeObjects);
-                for (Obj removableObject : removeObjects) {
-                    world.remove(removableObject);
-                }
-                removeObjects.clear();
+                removeAllObjects();
 
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -240,15 +241,43 @@ public class GeoSetup extends DefaultARSetup {
 
             @Override
             public void leaveDestination() {
-                removeObjects.addAll(addObjects);
-                world.remove(textObj);
-                addObjects.add(textObj);
-                for (Obj addObject : addObjects) {
-                    world.add(addObject);
+                addAllObjects();
+            }
+
+            private void accuracyChange(boolean low) {
+                if (low) {
+                    removeAllObjects();
+
+                } else if (!low) {
+                    addAllObjects();
                 }
-                addObjects.clear();
+            }
+
+            private void removeAllObjects() {
+                if (objectsAdded) {
+                    addObjects.addAll(removeObjects);
+                    for (Obj removableObject : removeObjects) {
+                        world.remove(removableObject);
+                    }
+                    removeObjects.clear();
+                    objectsAdded = false;
+                }
+            }
+
+            private void addAllObjects() {
+                if (!objectsAdded) {
+                    removeObjects.addAll(addObjects);
+                    world.remove(textObj);
+                    addObjects.add(textObj);
+                    for (Obj addObject : addObjects) {
+                        world.add(addObject);
+                    }
+                    addObjects.clear();
+                    objectsAdded = true;
+                }
             }
         });
+
 
     }
 
@@ -266,7 +295,7 @@ public class GeoSetup extends DefaultARSetup {
     private Obj newTextObject(GeoObj geoObj) {
         Obj o = new Obj();
         o.setComp(new Shape());
-        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f, reachDistance, o));
+        o.setComp(new DistUpdateComp(camera, 1f, context, geoObj, 0.5f, reachDistance, o, minAccuracy));
         o.getGraphicsComponent().addAnimation(new AnimationFaceToCamera(camera, 0.5f, false));
         o.getGraphicsComponent().addAnimation(new AnimationStickToCameraCenter(camera, 0.1f, new Vec(0, 0, 0.5f)));
         return o;
