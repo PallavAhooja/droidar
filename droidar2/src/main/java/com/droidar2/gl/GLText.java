@@ -29,8 +29,8 @@ import android.widget.TextView;
  */
 public class GLText extends MeshComponent {
 
-	private static final float CHAR_DIST = 0.5f;
-	private static final float CHAR_SIZE = 1f;
+	private static final float CHAR_DIST = 0.2f;
+	private static final float CHAR_SIZE = 0.4f;
 	private static final String LOG_TAG = "GLText";
 	private final HashMap<String, MeshComponent> myTextMap;
 	private String myText;
