@@ -56,7 +56,7 @@ public class TestSLM extends SimpleLocationManager {
     }
 
     @Override
-    public Location getCurrentBUfferedLocation() {
+    public Location getCurrentBufferedLocation() {
         return currentPosition;
     }
 

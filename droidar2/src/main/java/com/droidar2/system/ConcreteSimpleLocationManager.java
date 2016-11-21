@@ -22,12 +22,9 @@ public class ConcreteSimpleLocationManager extends SimpleLocationManager {
 	private static final double SQRT2PII = Math.sqrt(2 * Math.PI);
 
 	private static final String LOG_TAG = "ConcreteSimpleLocationManager";
-
+	private final float mimProb = 0.5f; // TODO
 	private Location currentPosition;
 	private LimitedQueue<Location> lastPositions;
-
-	private final float mimProb = 0.5f; // TODO
-
 	private Location lastStepPos;
 
 	public ConcreteSimpleLocationManager(Context context) {
@@ -39,7 +36,7 @@ public class ConcreteSimpleLocationManager extends SimpleLocationManager {
 	}
 
 	@Override
-	public Location getCurrentBUfferedLocation() {
+	public Location getCurrentBufferedLocation() {
 		return currentPosition;
 	}
 
@@ -49,6 +46,7 @@ public class ConcreteSimpleLocationManager extends SimpleLocationManager {
 		if (currentPosition == null) {
 			currentPosition = new Location("AveragePosition");
 		}
+		Log.d(LOG_TAG, "GPS Location is " + location);
 		calcFromLastPositions(currentPosition, location);
 
 		for (int i = 0; i < listenersToInform.size(); i++) {

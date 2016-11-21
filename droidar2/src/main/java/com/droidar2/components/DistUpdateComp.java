@@ -38,17 +38,18 @@ public class DistUpdateComp implements Entity {
     private double reachedDistance;
     private Vec camVec = new Vec();
     private GLText text;
+    private float minAccuracy;
 
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, Obj obj) {
-        this(myCamera, updateSpeed, context, geoObj, 1, -1d, obj);
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, Obj obj, float minAccuracy) {
+        this(myCamera, updateSpeed, context, geoObj, 1, -1d, obj, minAccuracy);
     }
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, Obj obj) {
-        this(myCamera, updateSpeed, context, geoObj, textSize, -1d, obj);
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, Obj obj, float minAccuracy) {
+        this(myCamera, updateSpeed, context, geoObj, textSize, -1d, obj, minAccuracy);
     }
 
-    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, double reachedDistance, Obj obj) {
+    public DistUpdateComp(GLCamera myCamera, float updateSpeed, Context context, GeoObj geoObj, float textSize, double reachedDistance, Obj obj, float minAccuracy) {
         this.myCamera = myCamera;
         timer = new UpdateTimer(updateSpeed, null);
         this.context = context;
@@ -57,6 +58,8 @@ public class DistUpdateComp implements Entity {
         this.reachedDistance = reachedDistance;
         this.text = new GLText("", context, textMap,
                 myCamera);
+
+        this.minAccuracy = minAccuracy;
 
         MeshComponent mc = obj.getGraphicsComponent();
         if (mc != null) {
@@ -79,18 +82,20 @@ public class DistUpdateComp implements Entity {
         if (timer.update(timeDelta, this)) {
 
             Location currentLocation = ConcreteSimpleLocationManager.getInstance(context)
-                    .getCurrentLocation();
-            if (currentLocation == null)
-                return true;
+                    .getCurrentBufferedLocation();
 
-            double distance = GeoUtils.distance(currentLocation.getLatitude(), geoObj.getLatitude()
-                    , currentLocation.getLongitude(), geoObj.getLongitude(), 0, 0);
             String distanceS;
-            if (reachedDistance != -1d && distance <= reachedDistance)
-                distanceS = "You have arrived";
-            else
-                distanceS = GeoUtils.getDistanceString(distance);
+            if (currentLocation == null || currentLocation.getAccuracy() > minAccuracy) {
+                distanceS = "Low GPS Accuracy";
+            } else {
+                double distance = GeoUtils.distance(currentLocation.getLatitude(), geoObj.getLatitude()
+                        , currentLocation.getLongitude(), geoObj.getLongitude(), 0, 0);
 
+                if (reachedDistance != -1d && distance <= reachedDistance)
+                    distanceS = "You have arrived";
+                else
+                    distanceS = GeoUtils.getDistanceString(distance);
+            }
             if (!distanceText.equals(distanceS)) {
                 distanceText = distanceS;
                 if (parent instanceof Obj) {
@@ -122,7 +127,6 @@ public class DistUpdateComp implements Entity {
 
         return mesh;
     }
-
 
 }
 

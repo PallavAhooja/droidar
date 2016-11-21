@@ -46,25 +46,25 @@ public abstract class SimpleLocationManager {
         return minimumAverageAccuracy;
     }
 
+    public static void setMinimumAverageAccuracy(float minimumAverageAccuracy) {
+        SimpleLocationManager.minimumAverageAccuracy = minimumAverageAccuracy;
+    }
+
     public static int getNumberOfSimulatedStepsInSameDirection() {
         return numberOfSimulatedStepsInSameDirection;
     }
 
-    public static void setStepDetectionEnabled(boolean stepDetectionEnabled) {
-        SimpleLocationManager.stepDetectionEnabled = stepDetectionEnabled;
+    public static void setNumberOfSimulatedStepsInSameDirection(
+            int numberOfSimulatedStepsInSameDirection) {
+        SimpleLocationManager.numberOfSimulatedStepsInSameDirection = numberOfSimulatedStepsInSameDirection;
     }
 
     public static boolean isStepDetectionEnabled() {
         return stepDetectionEnabled;
     }
 
-    public static void setMinimumAverageAccuracy(float minimumAverageAccuracy) {
-        SimpleLocationManager.minimumAverageAccuracy = minimumAverageAccuracy;
-    }
-
-    public static void setNumberOfSimulatedStepsInSameDirection(
-            int numberOfSimulatedStepsInSameDirection) {
-        SimpleLocationManager.numberOfSimulatedStepsInSameDirection = numberOfSimulatedStepsInSameDirection;
+    public static void setStepDetectionEnabled(boolean stepDetectionEnabled) {
+        SimpleLocationManager.stepDetectionEnabled = stepDetectionEnabled;
     }
 
     public static SimpleLocationManager getInstance(Context context) {
@@ -156,7 +156,7 @@ public abstract class SimpleLocationManager {
     /**
      * @return null if there is no current location measured yet
      */
-    public abstract Location getCurrentBUfferedLocation();
+    public abstract Location getCurrentBufferedLocation();
 
     /**
      * @param accuracy see the {@link Criteria#setAccuracy(int)} method for possible
@@ -165,7 +165,7 @@ public abstract class SimpleLocationManager {
      */
     public Location getCurrentLocation(int accuracy) {
 
-        Location l = getCurrentBUfferedLocation();
+        Location l = getCurrentBufferedLocation();
         if (l != null) {
             return l;
         }
@@ -202,7 +202,7 @@ public abstract class SimpleLocationManager {
      */
     public Location getCurrentLocation() {
 
-        Location l = getCurrentBUfferedLocation();
+        Location l = getCurrentBufferedLocation();
         if (l != null) {
             return l;
         }
@@ -327,7 +327,7 @@ public abstract class SimpleLocationManager {
                     Log.d(LOG_TAG, "Step detected");
                     Log.d(LOG_TAG, "    > compassAngle=" + compassAngle);
                     Log.d(LOG_TAG, "    > distance=" + steplength);
-                    Location location = getCurrentBUfferedLocation();
+                    Location location = getCurrentBufferedLocation();
 
                     if (location != null) {
                         Log.i(LOG_TAG,
