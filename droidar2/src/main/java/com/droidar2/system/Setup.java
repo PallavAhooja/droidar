@@ -25,7 +25,6 @@ import javax.microedition.khronos.opengles.GL10;
 import com.droidar2.listeners.SetupListener;
 import com.droidar2.util.EfficientList;
 import com.droidar2.util.Log;
-import com.droidar2.util.Vec;
 import com.droidar2.worldData.SystemUpdater;
 import com.droidar2.worldData.World;
 import com.droidar2.actions.Action;
@@ -70,13 +69,7 @@ import com.droidar2.commands.undoable.CommandProcessor;
 @SuppressWarnings("deprecation")
 public abstract class Setup {
 
-	public static int defaultArLayoutId = R.layout.defaultlayout;
-
 	private static final String LOG_TAG = "Setup";
-
-	public static boolean isOldDeviceWhereNothingWorksAsExpected;
-
-	public static boolean displaySetupStepLogging = true;
 	private static final String STEP0 = "Resetting all static stuff, singletons, etc..";
 	private static final String STEP1 = "Registering exeption handler";
 	private static final String STEP2 = "Loading device dependent settings";
@@ -92,34 +85,34 @@ public abstract class Setup {
 	private static final String STEP12 = "Show info screen";
 	private static final String STEP13 = "Entering fullscreen mode";
 	private static final String STEP_DONE = "All Setup-steps done!";
-
-	/**
-	 * use {@link Setup#getActivity()} instead
-	 * 
-	 * This is the activity which is created to display the AR content (camera
-	 * preview, opengl-layer and UI-layer)
-	 */
-	@Deprecated
-	public Activity myTargetActivity;
-	private CommandGroup myOptionsMenuCommands;
-	public CustomGLSurfaceView myGLSurfaceView;
-	public CameraView myCameraView;
-	private FrameLayout myOverlayView;
-	private SetupListener mySetupListener;
-	private double lastTime;
+	public static int defaultArLayoutId = R.layout.defaultlayout;
+	public static boolean isOldDeviceWhereNothingWorksAsExpected;
+	public static boolean displaySetupStepLogging = true;
+	private static Integer screenOrientation = Surface.ROTATION_90;
 	/**
 	 * TODO make this accessible
 	 */
 	private final boolean gotoFullScreenMode = true;
 	private final boolean useAccelAndMagnetoSensors;
-
+	/**
+	 * use {@link Setup#getActivity()} instead
+	 *
+	 * This is the activity which is created to display the AR content (camera
+	 * preview, opengl-layer and UI-layer)
+	 */
+	@Deprecated
+	public Activity myTargetActivity;
+	public CustomGLSurfaceView myGLSurfaceView;
+	public CameraView myCameraView;
+	private CommandGroup myOptionsMenuCommands;
+	private FrameLayout myOverlayView;
+	private SetupListener mySetupListener;
+	private double lastTime;
 	private GuiSetup guiSetup;
-
 	private GLRenderer glRenderer;
-
 	private SystemUpdater worldUpdater;
+	private boolean cameraPreview = true;
 
-	private static Integer screenOrientation = Surface.ROTATION_90;
 
 	public Setup() {
 		this(true);
@@ -153,6 +146,45 @@ public abstract class Setup {
 		return screenOrientation;
 	}
 
+	private static void loadDeviceDependentSettings(Activity activity) {
+		if (Integer.parseInt(android.os.Build.VERSION.SDK) <= Build.VERSION_CODES.DONUT) {
+			/*
+			 * Here is the problem: OpenGL seems to have rounding errors on
+			 * different gpus (see ObjectPicker.floatToByteColorValue) Thus the
+			 * G1 need a different value than a Nexus 1 eg.. TODO how to solve
+			 * this problem?
+			 */
+			isOldDeviceWhereNothingWorksAsExpected = true;
+			if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+				screenOrientation = Surface.ROTATION_0;
+			} else {
+				screenOrientation = Surface.ROTATION_90;
+			}
+		} else {
+			try {
+				Display display = ((WindowManager) activity
+						.getSystemService(Activity.WINDOW_SERVICE))
+						.getDefaultDisplay();
+				screenOrientation = (Integer) display.getClass()
+						.getMethod("getRotation", null).invoke(display, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * This will kill the complete process and thereby also any other activity
+	 * which uses this process. Only use this method if you want to implement a
+	 * final "Exit application" button.
+	 */
+	public static void killCompleteApplicationProcess() {
+		Log.w(LOG_TAG, "Killing complete process");
+		System.gc();
+		android.os.Process.killProcess(android.os.Process.myPid());
+		System.exit(1);
+	}
+
 	/**
 	 * @return This will just return {@link Setup#myTargetActivity}. Direct
 	 *         access to this field is also possible
@@ -164,16 +196,16 @@ public abstract class Setup {
 	/**
 	 * This method has to be executed in the activity which want to display the
 	 * AR content. In your activity do something like this:
-	 * 
+	 *
 	 * <pre>
 	 * public void onCreate(Bundle savedInstanceState) {
 	 * 	super.onCreate(savedInstanceState);
 	 * 	new MySetup(this).run();
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @param target
-	 * 
+	 *
 	 */
 	public void run(Activity target) {
 		myTargetActivity = target;
@@ -204,7 +236,7 @@ public abstract class Setup {
 			/*
 			 * The title bar is changed to a progress bar to visualize the setup
 			 * progress
-			 * 
+			 *
 			 * displaying the following stuff does not work until the UI-update
 			 * process is initialized by Activity.setContentView(..); so wrong
 			 * place here:
@@ -229,10 +261,10 @@ public abstract class Setup {
 		/*
 		 * set the orientation to always stay in landscape mode. this is
 		 * necessary to use the camera correctly
-		 * 
+		 *
 		 * targetActivity
 		 * .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		 * 
+		 *
 		 * no more needed, landscape mode is forced by the AndroidManifest
 		 */
 
@@ -278,6 +310,10 @@ public abstract class Setup {
 		// create the thierd view on top of cameraPreview and OpenGL view and
 		// init it:
 		myOverlayView = new FrameLayout(getActivity());
+//		myOverlayView.setBackgroundColor(Color.CYAN);
+//		myOverlayView.addView(new TextView(getActivity()));
+
+//		myBGView.setAlpha(0);
 		/*
 		 * after everything is initialized add the guiElements to the screen.
 		 * this should be done last because the com.droidar2.gui might need a initialized
@@ -309,7 +345,7 @@ public abstract class Setup {
 	/**
 	 * If you don't override this method it will create 2 default
 	 * {@link LightSource}s
-	 * 
+	 *
 	 * @param lights
 	 *            add all the {@link LightSource}s you want to use to this list
 	 * @return true if lightning should be enabled
@@ -397,7 +433,7 @@ public abstract class Setup {
 	 * Don't call the super method if you want do display an info screen on
 	 * startup. Just use the {@link InfoScreenSettings} to add information and
 	 * the rest will be done automatically
-	 * 
+	 *
 	 * @param infoScreenData
 	 *            See {@link InfoScreenSettings}
 	 */
@@ -418,6 +454,14 @@ public abstract class Setup {
 		addGUIOverlay();
 	}
 
+//	private void addBGOverlay() {
+//		View sourceView = View.inflate(getActivity(), R.layout.test_layout, null);
+//		myBGView.addView(sourceView);
+//		// add overlay view as an content view to the activity:
+//		myTargetActivity.addContentView(myBGView, new LayoutParams(
+//				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//	}
+
 	private void addOverlays() {
 		addCameraOverlay();
 		addGLSurfaceOverlay();
@@ -432,7 +476,9 @@ public abstract class Setup {
 
 	public void addGLSurfaceOverlay() {
 		if (Integer.parseInt(android.os.Build.VERSION.SDK) >= Build.VERSION_CODES.ECLAIR) {
-			myGLSurfaceView.setZOrderMediaOverlay(true);
+//			myGLSurfaceView.setZOrderMediaOverlay(true);
+			myGLSurfaceView.setZOrderOnTop(true);
+			myGLSurfaceView.setBackground(getActivity().getResources().getDrawable(R.drawable.splash));
 		}
 		myTargetActivity.addContentView(myGLSurfaceView, new LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -449,44 +495,17 @@ public abstract class Setup {
 		}
 	}
 
-	private static void loadDeviceDependentSettings(Activity activity) {
-		if (Integer.parseInt(android.os.Build.VERSION.SDK) <= Build.VERSION_CODES.DONUT) {
-			/*
-			 * Here is the problem: OpenGL seems to have rounding errors on
-			 * different gpus (see ObjectPicker.floatToByteColorValue) Thus the
-			 * G1 need a different value than a Nexus 1 eg.. TODO how to solve
-			 * this problem?
-			 */
-			isOldDeviceWhereNothingWorksAsExpected = true;
-			if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-				screenOrientation = Surface.ROTATION_0;
-			} else {
-				screenOrientation = Surface.ROTATION_90;
-			}
-		} else {
-			try {
-				Display display = ((WindowManager) activity
-						.getSystemService(Activity.WINDOW_SERVICE))
-						.getDefaultDisplay();
-				screenOrientation = (Integer) display.getClass()
-						.getMethod("getRotation", null).invoke(display, null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	/**
 	 * This method can be called to visualize additional setup steps in the
 	 * initialize-procedure of custom Setup subclass. One example would be to
 	 * call this method every time a model is composed in the
 	 * initFieldsIfNecessary() or the addWOrldsToRenderer() method. This could
 	 * be useful to give feedback while creating complex models.
-	 * 
+	 *
 	 * Do not forget to set the {@link Setup}.addToStepsCount(int
 	 * additionalSteps) to the correct value, depending on how often call this
 	 * method here!
-	 * 
+	 *
 	 * @param statusText
 	 */
 	public void debugLogDoSetupStep(String statusText) {
@@ -524,15 +543,15 @@ public abstract class Setup {
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * this is called after the initialization of the AR view started. Doing
 	 * field initialization here is a difference to doing it right in the
 	 * constructor, because normally a Setup object is created not directly
 	 * before it is used to start the AR view. So placing your field
 	 * initialization here normaly means to reduce the amount of created objects
 	 * if you are using more then one Setup.
-	 * 
+	 *
 	 */
 	public abstract void _a_initFieldsIfNecessary();
 
@@ -542,7 +561,7 @@ public abstract class Setup {
 	 * created world. When your world is build, add it to the
 	 * {@link GL1Renderer} object by calling
 	 * {@link GL1Renderer#addRenderElement(com.droidar2.worldData.Renderable)}
-	 * 
+	 *
 	 * @param glRenderer
 	 *            here you should add your world(s)
 	 * @param objectFactory
@@ -559,7 +578,7 @@ public abstract class Setup {
 	 * {@link EventManager} and the {@link CustomGLSurfaceView} to specify the
 	 * input-mechanisms. <br>
 	 * <br>
-	 * 
+	 *
 	 * Here is the typical AR example: The virtual camera should rotate when the
 	 * device is rotated and it should move when the device moves to simulate
 	 * the AR rotation and translation in a correct way. Therefore two com.droidar2.actions
@@ -570,18 +589,18 @@ public abstract class Setup {
 	 * eventManager.addOnLocationChangedAction(new ActionCalcRelativePos(world,
 	 * camera)); </b> <br>
 	 * <br>
-	 * 
+	 *
 	 * The {@link ActionRotateCameraBuffered} rotates the virtualCamera and the
 	 * {@link ActionCalcRelativePos} calculates the virtual position of the
 	 * camera and all the items in the virtual world. There are more
 	 * {@link Action}s which can be defined in the {@link EventManager}, for
 	 * example for keystrokes or other input types.<br>
 	 * <br>
-	 * 
+	 *
 	 * For more examples take a look at the different Setup examples.
-	 * 
+	 *
 	 * @param eventManager
-	 * 
+	 *
 	 * @param arView
 	 *            The {@link CustomGLSurfaceView#addOnTouchMoveAction(Action)}
 	 *            -method can be used to react on touch-screen input
@@ -595,7 +614,7 @@ public abstract class Setup {
 	 * be updated have to be added to the {@link SystemUpdater}. This update
 	 * process is independent to the rendering process and can be used for all
 	 * com.droidar2.system-logic which has to be done periodically
-	 * 
+	 *
 	 * @param updater
 	 *            add anything you want to update to this updater via
 	 *            {@link SystemUpdater#addObjectToUpdateCycle(com.droidar2.worldData.Updateable)}
@@ -606,7 +625,7 @@ public abstract class Setup {
 	 * here you can define or load any view you want and add it to the overlay
 	 * View. If this method is implemented, the
 	 * _e2_addElementsToGuiSetup()-method wont be called automatically
-	 * 
+	 *
 	 * @param overlayView
 	 *            here you have to add your created view
 	 * @param activity
@@ -617,6 +636,7 @@ public abstract class Setup {
 		// the main.xml layout is loaded and the guiSetup is created for
 		// customization. then the customized view is added to overlayView
 		View sourceView = View.inflate(activity, defaultArLayoutId, null);
+//		vg = (ViewGroup) sourceView.findViewById(R.id.bg_view);
 		guiSetup = new GuiSetup(this, sourceView);
 
 		_e2_addElementsToGuiSetup(getGuiSetup(), activity);
@@ -656,7 +676,7 @@ public abstract class Setup {
 	 * (main.xml). If you want to overlay your own design, just override the
 	 * {@link Setup}._e1_addElementsToOverlay() method and leave this one here
 	 * empty.
-	 * 
+	 *
 	 * @param guiSetup
 	 * @param activity
 	 *            this is the same activity you can get with
@@ -730,7 +750,7 @@ public abstract class Setup {
 
 	/**
 	 * see {@link Activity#onDestroy}
-	 * 
+	 *
 	 * @param a
 	 */
 	public void onDestroy(Activity a) {
@@ -740,18 +760,6 @@ public abstract class Setup {
 		worldUpdater.killUpdaterThread();
 		releaseCamera();
 		// killCompleteApplicationProcess();
-	}
-
-	/**
-	 * This will kill the complete process and thereby also any other activity
-	 * which uses this process. Only use this method if you want to implement a
-	 * final "Exit application" button.
-	 */
-	public static void killCompleteApplicationProcess() {
-		Log.w(LOG_TAG, "Killing complete process");
-		System.gc();
-		android.os.Process.killProcess(android.os.Process.myPid());
-		System.exit(1);
 	}
 
 	/**
@@ -838,18 +846,34 @@ public abstract class Setup {
 	}
 
 	public final void pauseCameraPreview() {
-		if (myCameraView != null) {
+		if (myCameraView != null && cameraPreview) {
 			Log.d(LOG_TAG, "Pausing camera preview " + myCameraView);
-			myCameraView.pause();
-			myCameraView.setVisibility(View.INVISIBLE);
+
+//			myGLSurfaceView.setBackgroundColor(Color.CYAN);
+			myGLSurfaceView.animate().setDuration(400).alpha(1).withEndAction(new Runnable() {
+				@Override
+				public void run() {
+					myCameraView.pause();
+					myCameraView.setVisibility(View.INVISIBLE);
+				}
+			});
+			cameraPreview = false;
 		}
 	}
 
 	public final void resumeCameraPreview() {
-		if (myCameraView != null) {
+		if (myCameraView != null && !cameraPreview) {
 			Log.d(LOG_TAG, "Resuming camera preview " + myCameraView);
 			myCameraView.resumeCamera();
 			myCameraView.setVisibility(View.VISIBLE);
+			myGLSurfaceView.animate().setDuration(400).alpha(0).withEndAction(new Runnable() {
+				@Override
+				public void run() {
+
+				}
+			});
+
+			cameraPreview = true;
 		}
 	}
 

@@ -57,7 +57,7 @@ public abstract class DefaultARSetup extends Setup {
     private ActionWaitForAccuracy minAccuracyAction;
     private Action rotateGLCameraAction;
     private float minAccuracy = 24.0f;
-    private boolean cameraPreview = true;
+
     private ToggleButton button;
 
     public DefaultARSetup() {
@@ -113,12 +113,10 @@ public abstract class DefaultARSetup extends Setup {
             @Override
             public void onGroundParallel(boolean parallel) {
                 if (button != null && button.isChecked()) {
-                    if (parallel && cameraPreview) {
+                    if (parallel) {
                         pauseCameraPreview();
-                        cameraPreview = !cameraPreview;
-                    } else if (!parallel && !cameraPreview) {
+                    } else if (!parallel) {
                         resumeCameraPreview();
-                        cameraPreview = !cameraPreview;
                     }
                 }
             }
@@ -128,6 +126,8 @@ public abstract class DefaultARSetup extends Setup {
 
             @Override
             public void onOrientChange(ScreenOrientation orientation) {
+                if (button == null)
+                    return;
                 switch (orientation) {
                     case PORTRAIT:
                         button.setRotation(270);
@@ -221,7 +221,7 @@ public abstract class DefaultARSetup extends Setup {
             public void onClick(View v) {
                 if(!button.isChecked()) {
                     pauseCameraPreview();
-                    cameraPreview = !cameraPreview;
+//                    cameraPreview = !cameraPreview;
                 }
                 else {
 
